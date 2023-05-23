@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 20:46:58 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 21:18:13 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ void md5_digest(Md5Context* context, void* output)
     // TODO check for overflow
     uint64_t original_length = context->length * 8;
 
-    // add bit 1 (0b1000_000)
     md5_update(context, &_BIT, 1);
 
     size_t len_mod = context->length % 64;
