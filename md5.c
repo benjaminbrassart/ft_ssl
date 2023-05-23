@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 17:58:24 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 20:46:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,12 @@ void md5_update(Md5Context* context, void const* data, size_t len)
 
     while (n > 0)
     {
-        context->buffer[context->length % 64] = *bytes;
+        context->buffer.u8[context->length % 64] = *bytes;
 
         bytes += 1;
         n -= 1;
 
-        if (context->length == SIZE_MAX)
+        if (context->length == UINT64_MAX)
             context->length = 0;
         else
             context->length += 1;
@@ -106,8 +106,22 @@ void md5_digest(Md5Context* context, void* output)
     static uint8_t const _BIT = 0x80;
     static uint8_t const _PADDING[64] = {};
 
+    // TODO check for overflow
+    uint64_t original_length = context->length * 8;
+
+    // add bit 1 (0b1000_000)
     md5_update(context, &_BIT, 1);
-    md5_update(context, _PADDING, 64 - (context->length % 64));
+
+    size_t len_mod = context->length % 64;
+    size_t padding_size;
+
+    if (len_mod <= 56)
+        padding_size = 56 - len_mod;
+    else
+        padding_size = (64 - len_mod) + 56;
+
+    md5_update(context, _PADDING, padding_size);
+    md5_update(context, &original_length, sizeof (original_length));
     memcpy(output, context->hash_vars, sizeof (context->hash_vars));
 }
 
@@ -119,13 +133,14 @@ static inline uint32_t __rotate_left(uint32_t word, uint32_t n)
 static void __md5_step(Md5Context* context)
 {
     uint32_t vars[4];
-    uint32_t f;
-    uint32_t g;
 
     memcpy(vars, context->hash_vars, sizeof (vars));
 
     for (uint32_t i = 0; i < 64; ++i)
     {
+        uint32_t f;
+        uint32_t g;
+
         switch (i / 16)
         {
             case 0:
@@ -146,12 +161,11 @@ static void __md5_step(Md5Context* context)
                 break;
         }
 
-        uint32_t const temp = vars[D];
-
+        f = f + vars[A] + K[i] + context->buffer.u32[g];
+        vars[A] = vars[D];
         vars[D] = vars[C];
         vars[C] = vars[B];
-        vars[B] = __rotate_left((vars[A] + f + K[i] + context->buffer[g]), S[i]) + vars[B];
-        vars[A] = temp;
+        vars[B] = vars[B] + __rotate_left(f, S[i]);
     }
 
     for (int i = 0; i < 4; ++i)
@@ -160,17 +174,19 @@ static void __md5_step(Md5Context* context)
 
 #include <stdio.h>
 
-int main(void)
+int main(int argc, char const* argv[])
 {
+    (void)argc;
+
     static char const BASE_HEX[16] = "0123456789abcdef";
-    static char const STRING[4] = "123\n";
+    char const* STRING = argv[1];
     uint8_t raw_hash[MD5_OUT_SIZE];
     char hash[MD5_OUT_SIZE * 2];
 
     Md5Context ctx;
 
     md5_init(&ctx);
-    md5_update(&ctx, STRING, 4);
+    md5_update(&ctx, STRING, strlen(STRING));
     md5_digest(&ctx, raw_hash);
 
     for (int i = 0; i < 16; ++i)

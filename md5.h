@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 16:06:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 17:31:40 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 19:39:05 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,11 @@ CPP_BEGIN
 typedef struct md5_context
 {
     uint32_t hash_vars[4];
-    uint8_t buffer[64];
+    union
+    {
+        uint8_t u8[64];
+        uint32_t u32[16];
+    } buffer;
     uint64_t length;
 } Md5Context;
 

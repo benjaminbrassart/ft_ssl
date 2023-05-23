@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/23 17:58:04 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/23 18:56:52 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ DIR_SRC := .
 DIR_OBJ := obj
 DIR_DOCS := docs
 
-SRC := md5.c sha2.c
+SRC := md5.c
+# SRC += sha2.c
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
