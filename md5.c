@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 20:46:08 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 20:46:58 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,37 +170,4 @@ static void __md5_step(Md5Context* context)
 
     for (int i = 0; i < 4; ++i)
         context->hash_vars[i] += vars[i];
-}
-
-#include <stdio.h>
-
-int main(int argc, char const* argv[])
-{
-    (void)argc;
-
-    static char const BASE_HEX[16] = "0123456789abcdef";
-    char const* STRING = argv[1];
-    uint8_t raw_hash[MD5_OUT_SIZE];
-    char hash[MD5_OUT_SIZE * 2];
-
-    Md5Context ctx;
-
-    md5_init(&ctx);
-    md5_update(&ctx, STRING, strlen(STRING));
-    md5_digest(&ctx, raw_hash);
-
-    for (int i = 0; i < 16; ++i)
-    {
-        hash[i * 2] = BASE_HEX[(raw_hash[i] >> 4) & 0xF];
-        hash[i * 2 + 1] = BASE_HEX[(raw_hash[i]) & 0xF];
-    }
-
-    printf("%.32s\n", hash);
-
-    // char hash[2];
-    // uint8_t n = 15;
-
-    // hash[0] = BASE_HEX[(n >> 4) & 0xF];
-    // hash[1] = BASE_HEX[(n) & 0xF];
-    // printf("%.2s\n", hash);
 }
