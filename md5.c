@@ -1,43 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   md5.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/23 17:58:24 by bbrassar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/**
+ * @file md5.c
+ * This is an implementation of the MD5 hashing algorithm.
+ *
+ * @see https://en.wikipedia.org/wiki/MD5#Pseudocode
+ */
+
+#include "md5.h"
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
-#define MD5_OUT_SIZE (16)
-
-typedef struct md5_context
-{
-} Md5Context;
+#define A 0
+#define B 1
+#define C 2
+#define D 3
 
 static uint32_t const K[64];
 static uint8_t const S[64];
-
-static uint32_t const A;
-static uint32_t const B;
-static uint32_t const C;
-static uint32_t const D;
+static uint32_t const HASH_VARS[4];
 
 /**
- * Initialize a MD5 hashing context
- *
- * @param context the context to initialize
-*/
-void md5_init(Md5Context* context);
-
-/**
- * Add data to a MD5 hashing context
+ * Loop through the internal buffer of a context and update the hash
  *
  * @param context the context to update
- * @param data what to put in the hash
- * @param len the number of bytes in DATA
  */
-void md5_update(Md5Context* context, void const* data, size_t len);
+static void __md5_step(Md5Context* context);
 
 /**
- * Calculate the hash of a MD5 context and invalidates it
- *
- * @param context the context to digest
- * @param output the destination of the hash, must be able to hold at least MD5_OUT_SIZE bytes
+ * Rotate a 32-bits word by n bits to the left
  */
-void md5_digest(Md5Context* context, void* output);
+static inline uint32_t __rotate_left(uint32_t word, uint32_t n);
 
 static uint32_t const K[64] = {
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -65,12 +69,122 @@ static uint8_t const S[64] = {
     6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,
 };
 
-static uint32_t const A = 0x67452301;
-static uint32_t const B = 0xefcdab89;
-static uint32_t const C = 0x98badcfe;
-static uint32_t const D = 0x10325476;
+static uint32_t const HASH_VARS[4] = {
+    0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
+};
+
+void md5_init(Md5Context* context)
+{
+    memcpy(context->hash_vars, HASH_VARS, sizeof (HASH_VARS));
+    context->length = 0;
+}
+
+void md5_update(Md5Context* context, void const* data, size_t len)
+{
+    uint8_t const* bytes = (uint8_t const*)data;
+    size_t n = len;
+
+    while (n > 0)
+    {
+        context->buffer[context->length % 64] = *bytes;
+
+        bytes += 1;
+        n -= 1;
+
+        if (context->length == SIZE_MAX)
+            context->length = 0;
+        else
+            context->length += 1;
+
+        if (context->length % 64 == 0)
+            __md5_step(context);
+    }
+}
+
+void md5_digest(Md5Context* context, void* output)
+{
+    static uint8_t const _BIT = 0x80;
+    static uint8_t const _PADDING[64] = {};
+
+    md5_update(context, &_BIT, 1);
+    md5_update(context, _PADDING, 64 - (context->length % 64));
+    memcpy(output, context->hash_vars, sizeof (context->hash_vars));
+}
+
+static inline uint32_t __rotate_left(uint32_t word, uint32_t n)
+{
+    return (word << n) | (word >> (32 - n));
+}
+
+static void __md5_step(Md5Context* context)
+{
+    uint32_t vars[4];
+    uint32_t f;
+    uint32_t g;
+
+    memcpy(vars, context->hash_vars, sizeof (vars));
+
+    for (uint32_t i = 0; i < 64; ++i)
+    {
+        switch (i / 16)
+        {
+            case 0:
+                f = (vars[B] & vars[C]) | (~vars[B] & vars[D]);
+                g = i;
+                break;
+            case 1:
+                f = (vars[D] & vars[B]) | (~vars[D] & vars[C]);
+                g = (5 * i + 1) % 16;
+                break;
+            case 2:
+                f = vars[B] ^ vars[C] ^ vars[D];
+                g = (3 * i + 5) % 16;
+                break;
+            case 3:
+                f = vars[C] ^ (vars[B] | ~vars[D]);
+                g = (7 * i) % 16;
+                break;
+        }
+
+        uint32_t const temp = vars[D];
+
+        vars[D] = vars[C];
+        vars[C] = vars[B];
+        vars[B] = __rotate_left((vars[A] + f + K[i] + context->buffer[g]), S[i]) + vars[B];
+        vars[A] = temp;
+    }
+
+    for (int i = 0; i < 4; ++i)
+        context->hash_vars[i] += vars[i];
+}
+
+#include <stdio.h>
 
 int main(void)
 {
+    static char const BASE_HEX[16] = "0123456789abcdef";
+    static char const STRING[4] = "123\n";
+    uint8_t raw_hash[MD5_OUT_SIZE];
+    char hash[MD5_OUT_SIZE * 2];
 
+    Md5Context ctx;
+
+    md5_init(&ctx);
+    md5_update(&ctx, STRING, 4);
+    md5_digest(&ctx, raw_hash);
+
+    for (int i = 0; i < 16; ++i)
+    {
+        hash[i * 2] = BASE_HEX[(raw_hash[i] >> 4) & 0xF];
+        hash[i * 2 + 1] = BASE_HEX[(raw_hash[i]) & 0xF];
+    }
+
+    printf("%.32s\n", hash);
+
+    // char hash[2];
+    // uint8_t n = 15;
+
+    // hash[0] = BASE_HEX[(n >> 4) & 0xF];
+    // hash[1] = BASE_HEX[(n) & 0xF];
+    // printf("%.2s\n", hash);
 }
