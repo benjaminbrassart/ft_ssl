@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 17:25:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 17:57:07 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 21:41:02 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,16 @@ static uint64_t const K_64[80];
 static uint64_t const HASH_VARS_384[8];
 /** Initial hash values for SHA-512 */
 static uint64_t const HASH_VARS_512[8];
+
+static void __sha224_update(Sha2Context* context, void const* data, size_t len);
+static void __sha256_update(Sha2Context* context, void const* data, size_t len);
+static void __sha384_update(Sha2Context* context, void const* data, size_t len);
+static void __sha512_update(Sha2Context* context, void const* data, size_t len);
+
+static void __sha224_digest(Sha2Context* context, void* output);
+static void __sha256_digest(Sha2Context* context, void* output);
+static void __sha384_digest(Sha2Context* context, void* output);
+static void __sha512_digest(Sha2Context* context, void* output);
 
 /**
  * Rotate a 32-bits word by n bits to the right
@@ -142,6 +152,45 @@ static uint64_t const HASH_VARS_512[8] = {
     0x1f83d9abfb41bd6b, 0x5be0cd19137e2179,
 };
 
+void sha2_init(Sha2Context* context, Sha2Algorithm algorithm)
+{
+    context->alg = algorithm;
+    context->length = 0;
+    switch (algorithm)
+    {
+        case SHA224:
+            context->__update = __sha224_update;
+            context->__digest = __sha224_digest;
+            break;
+        case SHA256:
+            context->__update = __sha256_update;
+            context->__digest = __sha256_digest;
+            break;
+        case SHA384:
+            context->__update = __sha384_update;
+            context->__digest = __sha384_digest;
+            break;
+        case SHA512:
+            context->__update = __sha512_update;
+            context->__digest = __sha512_digest;
+            break;
+        default:
+            context->__update = NULL;
+            context->__digest = NULL;
+            break;
+    }
+}
+
+void sha2_update(Sha2Context* context, void const* data, size_t len)
+{
+    context->__update(context, data, len);
+}
+
+void sha2_digest(Sha2Context* context, void* output)
+{
+    context->__digest(context, output);
+}
+
 static inline uint32_t __rotate_right32(uint32_t word, uint32_t n)
 {
     return (word >> n) | (word << (32 - n));
@@ -150,4 +199,44 @@ static inline uint32_t __rotate_right32(uint32_t word, uint32_t n)
 static inline uint64_t __rotate_right64(uint64_t word, uint64_t n)
 {
     return (word >> n) | (word << (64 - n));
+}
+
+static void __sha224_update(Sha2Context* context, void const* data, size_t len)
+{
+    // TODO
+}
+
+static void __sha256_update(Sha2Context* context, void const* data, size_t len)
+{
+    // TODO
+}
+
+static void __sha384_update(Sha2Context* context, void const* data, size_t len)
+{
+    // TODO
+}
+
+static void __sha512_update(Sha2Context* context, void const* data, size_t len)
+{
+    // TODO
+}
+
+static void __sha224_digest(Sha2Context* context, void* output)
+{
+    // TODO
+}
+
+static void __sha256_digest(Sha2Context* context, void* output)
+{
+    // TODO
+}
+
+static void __sha384_digest(Sha2Context* context, void* output)
+{
+    // TODO
+}
+
+static void __sha512_digest(Sha2Context* context, void* output)
+{
+    // TODO
 }

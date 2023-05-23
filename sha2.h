@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 17:26:33 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 17:40:03 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 21:25:43 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,21 @@ typedef enum sha2_algorithm
     SHA512,
 } Sha2Algorithm;
 
-typedef struct sha2_context
+typedef struct sha2_context Sha2Context;
+
+struct sha2_context
 {
     Sha2Algorithm alg;
-    uint32_t hash_vars[8];
+    union
+    {
+        uint32_t u32[8];
+        uint64_t u64[8];
+    } hash_vars;
     uint8_t buffer[64];
     uint64_t length;
-} Sha2Context;
+    void (*__update)(Sha2Context*, void const*, size_t);
+    void (*__digest)(Sha2Context*, void*);
+};
 
 /**
  * Initialize a SHA-2 hashing context
@@ -59,7 +67,7 @@ void sha2_init(Sha2Context* context, Sha2Algorithm algorithm);
  * @param data what to put in the hash
  * @param len the number of bytes in DATA
  */
-void sha2_update(Sha2Algorithm* context, void const* data, size_t len);
+void sha2_update(Sha2Context* context, void const* data, size_t len);
 
 /**
  * Calculate the hash of a SHA-2 context and invalidate it
@@ -68,7 +76,7 @@ void sha2_update(Sha2Algorithm* context, void const* data, size_t len);
  * @param output the destination if the hash, must be able to hold at least
  * <ALGORITHM>_OUT_SIZE
  */
-void sha2_digest(Sha2Algorithm* context, void* output);
+void sha2_digest(Sha2Context* context, void* output);
 
 CPP_END
 
