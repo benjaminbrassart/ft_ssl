@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "make -j",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false,
+        "revealProblems": "onProblem"
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ],
+  "version": "2.0.0"
+}

@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch",
+      "args": ["a"],
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/ft_ssl",
+      "preLaunchTask": "Build",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
