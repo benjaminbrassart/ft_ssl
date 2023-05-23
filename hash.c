@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 23:23:16 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 01:34:09 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 01:50:56 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@
 #include <string.h>
 #include <unistd.h>
 
+static void __add_input(HashOptions* options, HashInputType type, char const* value);
+
 int hash_options_parse(HashOptions* options, int argc, char const* argv[])
 {
     options->bits = 0;
-
+    options->inputs_size = 0;
     options->inputs = malloc(sizeof (*options->inputs) * argc);
 
     if (options->inputs == NULL)
@@ -32,11 +34,7 @@ int hash_options_parse(HashOptions* options, int argc, char const* argv[])
     }
 
     if (!isatty(STDIN_FILENO))
-    {
-        options->inputs[options->inputs_size].type = InputStdin;
-        options->inputs[options->inputs_size].value = "stdin";
-        options->inputs_size += 1;
-    }
+        __add_input(options, InputStdin, "stdin");
 
     int i = 1;
 
@@ -62,9 +60,7 @@ int hash_options_parse(HashOptions* options, int argc, char const* argv[])
                     fprintf(stderr, "ft_ssl: options requires an argument -- 's'\n");
                     goto _error;
                 }
-                options->inputs[options->inputs_size].type = InputString;
-                options->inputs[options->inputs_size].value = argv[i];
-                options->inputs_size += 1;
+                __add_input(options, InputString, argv[i]);
                 break;
             default:
                 fprintf(stderr, "ft_ssl: unknown option -- '%c'\n", argv[i][1]);
@@ -73,18 +69,10 @@ int hash_options_parse(HashOptions* options, int argc, char const* argv[])
     }
 
     for(; i < argc; i += 1)
-    {
-        options->inputs[options->inputs_size].type = InputFile;
-        options->inputs[options->inputs_size].value = argv[i];
-        options->inputs_size += 1;
-    }
+        __add_input(options, InputFile, argv[i]);
 
     if (options->inputs_size == 0)
-    {
-        options->inputs[options->inputs_size].type = InputStdin;
-        options->inputs[options->inputs_size].value = "stdin";
-        options->inputs_size += 1;
-    }
+        __add_input(options, InputStdin, "stdin");
 
     return EXIT_SUCCESS;
 
@@ -96,4 +84,11 @@ _error:
 void hash_options_cleanup(HashOptions* options)
 {
     free(options->inputs);
+}
+
+static void __add_input(HashOptions* options, HashInputType type, char const* value)
+{
+    options->inputs[options->inputs_size].type = type;
+    options->inputs[options->inputs_size].value = value;
+    options->inputs_size += 1;
 }
