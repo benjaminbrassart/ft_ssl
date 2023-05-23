@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 21:18:13 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/23 23:46:18 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ static void __md5_step(Md5Context* context)
 
     memcpy(vars, context->hash_vars, sizeof (vars));
 
-    for (uint32_t i = 0; i < 64; ++i)
+    for (uint32_t i = 0; i < 64; i += 1)
     {
         uint32_t f;
         uint32_t g;
@@ -167,6 +167,6 @@ static void __md5_step(Md5Context* context)
         vars[B] = vars[B] + __rotate_left(f, S[i]);
     }
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; i += 1)
         context->hash_vars[i] += vars[i];
 }
