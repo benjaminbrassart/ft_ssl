@@ -6,14 +6,22 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/24 03:43:21 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/24 22:12:30 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := ft_ssl
+DIR_LIBFT := libft
+NAME_LIBFT := $(DIR_LIBFT)/libft.a
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude
+CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I.
+
+LDLIBS := -lft
+LDFLAGS := -L$(dir $(NAME_LIBFT))
+
+RM := rm -vf
+MKDIR := mkdir -vp
 
 DIR_SRC := src
 DIR_OBJ := obj
@@ -26,12 +34,15 @@ SRC += hex.c
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
-$(NAME): $(OBJ)
-	$(CC) $^ -o $@
+$(NAME): $(OBJ) $(NAME_LIBFT)
+	$(CC) $(filter %.o,$^) -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(OBJ): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
-	@mkdir -vp $(@D)
+	@$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $< -o $@
+
+$(NAME_LIBFT):
+	@$(MAKE) $(MAKEFLAGS) -C $(@D)
 
 -include $(DEP)
 
@@ -40,9 +51,11 @@ $(OBJ): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
 all: $(NAME)
 
 clean:
-	@rm -vfr $(DIR_OBJ)
+	@$(RM) -r $(DIR_OBJ)
+	@$(MAKE) -C $(DIR_LIBFT) clean
 
 fclean: clean
-	rm -vf $(NAME)
+	@$(RM) $(NAME)
+	@$(MAKE) -C $(DIR_LIBFT) fclean
 
 re: fclean all
