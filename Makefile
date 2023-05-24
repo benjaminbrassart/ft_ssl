@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/24 03:34:00 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/24 03:35:28 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME := ft_ssl
 CC := cc
 CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude
 
-DIR_SRC := .
+DIR_SRC := src
 DIR_OBJ := obj
 DIR_DOCS := docs
 
