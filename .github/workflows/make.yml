@@ -1,0 +1,11 @@
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v3
+      - run: make -j
