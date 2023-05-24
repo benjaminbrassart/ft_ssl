@@ -6,13 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 01:38:38 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:34:23 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "hash.h"
-#include "hex.h"
-#include "md5.h"
+#include "ft_ssl/hash.h"
+#include "ft_ssl/hex.h"
+#include "ft_ssl/md5.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>

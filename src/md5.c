@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 23:46:18 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:33:44 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  * @see https://en.wikipedia.org/wiki/MD5#Pseudocode
  */
 
-#include "md5.h"
+#include "ft_ssl/md5.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

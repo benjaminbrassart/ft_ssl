@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 17:25:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 21:41:02 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:33:48 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  * @see https://en.wikipedia.org/wiki/SHA-2#Pseudocode
  */
 
-#include "sha2.h"
+#include "ft_ssl/sha2.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

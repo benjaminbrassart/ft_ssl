@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 17:26:33 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/23 21:25:43 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:33:40 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #ifndef SHA2_H
 # define SHA2_H
 
-# include "cpp.h"
+# include "ft_ssl/cpp.h"
 # include <stddef.h>
 # include <stdint.h>
 

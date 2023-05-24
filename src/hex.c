@@ -6,11 +6,11 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 01:10:12 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 01:15:24 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:32:30 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "hex.h"
+#include "ft_ssl/hex.h"
 #include <stddef.h>
 #include <stdint.h>
 

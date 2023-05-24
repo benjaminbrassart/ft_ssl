@@ -6,11 +6,11 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 23:23:16 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 01:50:56 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:32:26 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "hash.h"
+#include "ft_ssl/hash.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
