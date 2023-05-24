@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:33:44 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 22:14:57 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
  */
 
 #include "ft_ssl/md5.h"
+#include "libft/ft.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -75,7 +76,7 @@ static uint32_t const HASH_VARS[4] = {
 
 void md5_init(Md5Context* context)
 {
-    memcpy(context->hash_vars, HASH_VARS, sizeof (HASH_VARS));
+    ft_memcpy(context->hash_vars, HASH_VARS, sizeof (HASH_VARS));
     context->length = 0;
 }
 
@@ -121,7 +122,7 @@ void md5_digest(Md5Context* context, void* output)
 
     md5_update(context, _PADDING, padding_size);
     md5_update(context, &original_length, sizeof (original_length));
-    memcpy(output, context->hash_vars, sizeof (context->hash_vars));
+    ft_memcpy(output, context->hash_vars, sizeof (context->hash_vars));
 }
 
 static inline uint32_t __rotate_left(uint32_t word, uint32_t n)
@@ -133,7 +134,7 @@ static void __md5_step(Md5Context* context)
 {
     uint32_t vars[4];
 
-    memcpy(vars, context->hash_vars, sizeof (vars));
+    ft_memcpy(vars, context->hash_vars, sizeof (vars));
 
     for (uint32_t i = 0; i < 64; i += 1)
     {
