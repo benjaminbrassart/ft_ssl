@@ -6,13 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:34:23 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/24 22:16:50 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/hash.h"
 #include "ft_ssl/hex.h"
 #include "ft_ssl/md5.h"
+#include "libft/ft.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -43,7 +44,7 @@ int main(int argc, char const* argv[])
     }
 
     for (size_t i = 0; i < (sizeof (COMMANDS) / sizeof (*COMMANDS)); ++i)
-        if (strcmp(argv[1], COMMANDS[i].name) == 0)
+        if (ft_strcmp(argv[1], COMMANDS[i].name) == 0)
             return COMMANDS[i].command(argc - 1, &argv[1]);
 
     fprintf(stderr, "ft_ssl: unknown command: %s\n", argv[1]);
