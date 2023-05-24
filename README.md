@@ -29,11 +29,11 @@ It is split across 3 sub-projects, each focusing on an aspect of OpenSSL:
 ## Milestones
 
 - ft_ssl_md5 **_ongoing_**
-    - ~~md5~~ **DONE**
-    - sha224
-    - sha256
-    - sha384
-    - sha512
+    - [x] md5
+    - [ ] sha224
+    - [ ] sha256
+    - [ ] sha384
+    - [ ] sha512
 - ft_ssl_des ***maybe later***
 - ft_ssl_rsa ***maybe later***
 
