@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/24 03:35:28 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/24 03:43:21 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,6 @@ CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude
 
 DIR_SRC := src
 DIR_OBJ := obj
-DIR_DOCS := docs
 
 SRC := main.c
 SRC += md5.c
@@ -36,17 +35,14 @@ $(OBJ): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
 
 -include $(DEP)
 
-.PHONY: all clean fclean re docs
+.PHONY: all clean fclean re
 
 all: $(NAME)
 
 clean:
-	@rm -vfr $(DIR_OBJ) $(DIR_DOCS)
+	@rm -vfr $(DIR_OBJ)
 
 fclean: clean
 	rm -vf $(NAME)
 
 re: fclean all
-
-docs: Doxyfile main.dox $(SRC:%:$(DIR_SRC)/%)
-	@doxygen Doxyfile
