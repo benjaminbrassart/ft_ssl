@@ -6,15 +6,23 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 23:38:15 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 23:57:07 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 02:38:37 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHA22_HPP
 # define SHA22_HPP
 
+# include "ft_ssl/cpp.h"
 # include <stddef.h>
 # include <stdint.h>
+
+CPP_BEGIN
+
+# define SHA224_OUT_SIZE (28)
+# define SHA256_OUT_SIZE (32)
+# define SHA384_OUT_SIZE (48)
+# define SHA512_OUT_SIZE (64)
 
 typedef enum sha2_algorithm Sha2Algorithm;
 
@@ -73,6 +81,13 @@ struct sha512_data
     } buffer;
 };
 
+/**
+ * An execution context for the SHA-2 algorithm family
+ *
+ * @param alg the algorithm used for this context
+ * @param length the total length of the input
+ * @param data algorithm-dependent data, such as the buffer and internal state (hash variables)
+ */
 struct sha2_context
 {
     Sha2Algorithm alg;
@@ -84,6 +99,16 @@ struct sha2_context
         Sha384Data sha384;
         Sha512Data sha512;
     } data;
+    void (*__update)(Sha2Context*, void const*, size_t);
+    void (*__digest)(Sha2Context*, void*);
 };
+
+void sha2_init(Sha2Context* context, Sha2Algorithm algorithm);
+
+void sha2_update(Sha2Context* context, void const* data, size_t len);
+
+void sha2_digest(Sha2Context* context, void* output);
+
+CPP_END
 
 #endif // SHA22_HPP
