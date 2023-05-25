@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 22:28:11 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 22:51:31 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ $(NAME_LIBFT):
 
 -include $(DEP) $(DEP_MAIN)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re unit-test
 
 all: $(NAME)
 
@@ -70,3 +70,6 @@ fclean: clean
 	@$(MAKE) -C $(DIR_LIBFT) fclean
 
 re: fclean all
+
+unit-test:
+	@cd tests/unit && sh test.sh
