@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 21:18:34 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 22:41:03 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 22:53:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ int main()
         assert(rotate_left_u64(n, 0) == n);
         assert(rotate_left_u64(n, 1) == 0x02ULL);
         assert(rotate_right_u64(n, 0) == n);
-        assert(rotate_right_u64(n, 1) == 0x8000000000000000);
+        assert(rotate_right_u64(n, 1) == 0x8000000000000000ULL);
     }
 }
