@@ -44,3 +44,7 @@ git clone --recursive https://github.com/benjaminbrassart/ft_ssl.git ft_ssl
 cd ft_ssl
 make
 ```
+
+## Tools
+
+[sha256algorithm.com](sha256algorithm.com) &mdash; Step-by-step SHA256 visualizer
