@@ -6,12 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 06:36:14 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 08:17:36 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/sha2.h"
 #include "libft/ft.h"
+#include "libft/ft_byteswap.h"
 #include <byteswap.h>
 
 #define A 0
@@ -147,7 +148,7 @@ static void __sha256_update(Sha2Context* context, void const* data, size_t len)
             context->length += 1;
 
             if (context->length % 4 == 0)
-                context->data.sha256.buffer.u32[(context->length / 4) - 1] = bswap_32(context->data.sha256.buffer.u32[(context->length / 4) - 1]);
+                context->data.sha256.buffer.u32[(context->length / 4) - 1] = ft_bswap_32(context->data.sha256.buffer.u32[(context->length / 4) - 1]);
         }
 
         if (context->length % 64 == 0)
@@ -163,7 +164,7 @@ static void __sha256_digest(Sha2Context* context, void* output)
 
     // TODO check for overflow;
     uint64_t original_length = context->length * 8;
-    original_length = bswap_64(original_length);
+    original_length = ft_bswap_64(original_length);
 
     context->__update(context, &_BIT, 1);
 
@@ -179,7 +180,7 @@ static void __sha256_digest(Sha2Context* context, void* output)
     context->__update(context, &original_length, sizeof (original_length));
 
     for (int i = 0; i < 8; i += 1)
-        hash[i] = bswap_32(context->data.sha256.hash_vars[i]);
+        hash[i] = ft_bswap_32(context->data.sha256.hash_vars[i]);
 }
 
 static void __sha256_step(Sha2Context* context)

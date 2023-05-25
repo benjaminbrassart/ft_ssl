@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 06:24:15 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 08:17:55 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ DIR_LIBFT := libft
 NAME_LIBFT := $(DIR_LIBFT)/libft.a
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I.
+CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I$(DIR_LIBFT)/include
 
 LDLIBS := -lft
 LDFLAGS := -L$(dir $(NAME_LIBFT))
