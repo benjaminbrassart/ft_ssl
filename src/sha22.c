@@ -6,12 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 03:29:16 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 06:21:04 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/sha22.h"
 #include "libft/ft.h"
+#include <byteswap.h>
 
 #define A 0
 #define B 1
@@ -76,6 +77,7 @@ void sha2_init(Sha2Context* context, Sha2Algorithm algorithm)
     void (*init_fn)(Sha2Context*);
 
     context->alg = algorithm;
+    context->length = 0;
 
     switch (algorithm)
     {
@@ -141,7 +143,12 @@ static void __sha256_update(Sha2Context* context, void const* data, size_t len)
         if (context->length == UINT64_MAX)
             context->length = 0;
         else
+        {
             context->length += 1;
+
+            if (context->length % 4 == 0)
+                context->data.sha256.buffer.u32[(context->length / 4) - 1] = bswap_32(context->data.sha256.buffer.u32[(context->length / 4) - 1]);
+        }
 
         if (context->length % 64 == 0)
             __sha256_step(context);
@@ -152,9 +159,11 @@ static void __sha256_digest(Sha2Context* context, void* output)
 {
     static uint8_t const _BIT = 0x80;
     static uint8_t const _PADDING[64] = {};
+    uint32_t* hash = (uint32_t*)output;
 
     // TODO check for overflow;
     uint64_t original_length = context->length * 8;
+    original_length = bswap_64(original_length);
 
     context->__update(context, &_BIT, 1);
 
@@ -168,12 +177,17 @@ static void __sha256_digest(Sha2Context* context, void* output)
 
     context->__update(context, _PADDING, padding_size);
     context->__update(context, &original_length, sizeof (original_length));
-    ft_memcpy(output, context->data.sha256.hash_vars, sizeof (context->data.sha256.hash_vars));
+
+    for (int i = 0; i < 8; i += 1)
+        hash[i] = bswap_32(context->data.sha256.hash_vars[i]);
 }
 
 static void __sha256_step(Sha2Context* context)
 {
-    uint32_t* w = context->data.sha256.buffer.u32;
+    uint32_t w[64];
+
+    for (int i = 0; i < 16; ++i)
+        w[i] = context->data.sha256.buffer.u32[i];
 
     {
         uint32_t sigma0;
@@ -203,11 +217,11 @@ static void __sha256_step(Sha2Context* context)
             uint32_t temp1;
             uint32_t temp2;
 
-            sigma1 = __rotate_right_u32(vars[E], 6) ^ (__rotate_right_u32(vars[E], 11) ^ __rotate_right_u32(vars[E], 25));
-            ch = (vars[E] & vars[F]) ^ (~vars[E] & vars[F]);
+            sigma1 = __rotate_right_u32(vars[E], 6) ^ __rotate_right_u32(vars[E], 11) ^ __rotate_right_u32(vars[E], 25);
+            ch = (vars[E] & vars[F]) ^ (~vars[E] & vars[G]);
             temp1 = vars[H] + sigma1 + ch + K_32[i] + w[i];
 
-            sigma0 = __rotate_right_u32(vars[A], 2) ^ (__rotate_right_u32(vars[A], 13) ^ __rotate_right_u32(vars[A], 22));
+            sigma0 = __rotate_right_u32(vars[A], 2) ^ __rotate_right_u32(vars[A], 13) ^ __rotate_right_u32(vars[A], 22);
             maj = (vars[A] & vars[B]) ^ (vars[A] & vars[C]) ^ (vars[B] & vars[C]);
             temp2 = sigma0 + maj;
 
