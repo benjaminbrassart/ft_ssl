@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 22:14:57 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 21:14:17 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
  */
 
 #include "ft_ssl/md5.h"
+#include "ft_ssl/rotate.h"
 #include "libft/ft.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -38,11 +39,6 @@ static uint32_t const HASH_VARS[4];
  * @param context the context to update
  */
 static void __md5_step(Md5Context* context);
-
-/**
- * Rotate a 32-bits word by n bits to the left
- */
-static inline uint32_t __rotate_left(uint32_t word, uint32_t n);
 
 static uint32_t const K[64] = {
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -125,11 +121,6 @@ void md5_digest(Md5Context* context, void* output)
     ft_memcpy(output, context->hash_vars, sizeof (context->hash_vars));
 }
 
-static inline uint32_t __rotate_left(uint32_t word, uint32_t n)
-{
-    return (word << n) | (word >> (32 - n));
-}
-
 static void __md5_step(Md5Context* context)
 {
     uint32_t vars[4];
@@ -165,7 +156,7 @@ static void __md5_step(Md5Context* context)
         vars[A] = vars[D];
         vars[D] = vars[C];
         vars[C] = vars[B];
-        vars[B] = vars[B] + __rotate_left(f, S[i]);
+        vars[B] = vars[B] + rotate_left_u32(f, S[i]);
     }
 
     for (int i = 0; i < 4; i += 1)

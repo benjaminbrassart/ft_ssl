@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 08:17:55 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 21:13:12 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRC += md5.c
 SRC += sha2.c
 SRC += hash.c
 SRC += hex.c
+SRC += rotate.c
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
