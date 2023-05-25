@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 
-make -sj || exit 2
+make -j || exit 2
 
 STATUS=0
+
+printf -- '\nRunning tests:\n'
 
 for f in $(find . -name '*.out'); do
     basename -z "${f}" .out

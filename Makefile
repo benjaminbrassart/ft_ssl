@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 22:57:39 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 23:04:11 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,7 @@ $(NAME_LIBFT_SSL): $(OBJ)
 	$(AR) $(ARFLAGS) $@ $?
 
 $(NAME_LIBFT):
-	@$(MAKE) $(MAKEFLAGS) -C $(@D)
+	@$(MAKE) -C $(@D)
 
 -include $(DEP) $(DEP_MAIN)
 

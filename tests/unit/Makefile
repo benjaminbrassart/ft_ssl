@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/25 22:20:26 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 22:34:34 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 23:03:37 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ $(BIN): %.out: %.cpp $(NAME_LIBFT_SSL) $(NAME_LIBFT)
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(NAME_LIBFT) $(NAME_LIBFT_SSL):
-	$(MAKE) $(MAKEFLAGS) -C $(@D) $(@F)
+	$(MAKE) -C $(@D) $(@F)
 
 clean:
 
