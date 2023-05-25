@@ -6,11 +6,12 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 08:17:36 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 21:16:32 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/sha2.h"
+#include "ft_ssl/rotate.h"
 #include "libft/ft.h"
 #include "libft/ft_byteswap.h"
 #include <byteswap.h>
@@ -45,9 +46,6 @@ static void __sha224_step(Sha2Context* context) __attribute__((unused));
 static void __sha256_step(Sha2Context* context);
 static void __sha384_step(Sha2Context* context) __attribute__((unused));
 static void __sha512_step(Sha2Context* context) __attribute__((unused));
-
-static uint32_t __rotate_right_u32(uint32_t word, uint32_t n);
-static uint64_t __rotate_right_u64(uint64_t word, uint64_t n) __attribute__((unused));
 
 static uint32_t const K_32[64] = {
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
@@ -196,8 +194,8 @@ static void __sha256_step(Sha2Context* context)
 
         for (int i = 16; i < 64; i += 1)
         {
-            sigma0 = (__rotate_right_u32(w[i - 15], 7) ^ __rotate_right_u32(w[i - 15], 18)) ^ (w[i - 15] >> 3);
-            sigma1 = (__rotate_right_u32(w[i - 2], 17) ^ __rotate_right_u32(w[i - 2], 19)) ^ (w[i - 2] >> 10);
+            sigma0 = (rotate_right_u32(w[i - 15], 7) ^ rotate_right_u32(w[i - 15], 18)) ^ (w[i - 15] >> 3);
+            sigma1 = (rotate_right_u32(w[i - 2], 17) ^ rotate_right_u32(w[i - 2], 19)) ^ (w[i - 2] >> 10);
             w[i] = w[i - 16] + sigma0 + w[i - 7] + sigma1;
         }
     }
@@ -218,11 +216,11 @@ static void __sha256_step(Sha2Context* context)
             uint32_t temp1;
             uint32_t temp2;
 
-            sigma1 = __rotate_right_u32(vars[E], 6) ^ __rotate_right_u32(vars[E], 11) ^ __rotate_right_u32(vars[E], 25);
+            sigma1 = rotate_right_u32(vars[E], 6) ^ rotate_right_u32(vars[E], 11) ^ rotate_right_u32(vars[E], 25);
             ch = (vars[E] & vars[F]) ^ (~vars[E] & vars[G]);
             temp1 = vars[H] + sigma1 + ch + K_32[i] + w[i];
 
-            sigma0 = __rotate_right_u32(vars[A], 2) ^ __rotate_right_u32(vars[A], 13) ^ __rotate_right_u32(vars[A], 22);
+            sigma0 = rotate_right_u32(vars[A], 2) ^ rotate_right_u32(vars[A], 13) ^ rotate_right_u32(vars[A], 22);
             maj = (vars[A] & vars[B]) ^ (vars[A] & vars[C]) ^ (vars[B] & vars[C]);
             temp2 = sigma0 + maj;
 
@@ -239,16 +237,6 @@ static void __sha256_step(Sha2Context* context)
         for (int i = 0; i < 8; i += 1)
             context->data.sha256.hash_vars[i] += vars[i];
     }
-}
-
-static uint32_t __rotate_right_u32(uint32_t word, uint32_t n)
-{
-    return (word >> n) | (word << (32 - n));
-}
-
-static uint64_t __rotate_right_u64(uint64_t word, uint64_t n)
-{
-    return (word >> n) | (word << (64 - n));
 }
 
 static void __sha224_update(Sha2Context* context, void const* data, size_t len)
