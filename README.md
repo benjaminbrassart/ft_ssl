@@ -47,4 +47,5 @@ make
 
 ## Tools
 
-[sha256algorithm.com](sha256algorithm.com) &mdash; Step-by-step SHA256 visualizer
+- [sha256algorithm.com](https://sha256algorithm.com/) &mdash; Step-by-step SHA256 visualizer
+- [rapidtables.com](https://www.rapidtables.com/) &mdash; Base conversions ([bin2dec](https://www.rapidtables.com/convert/number/binary-to-decimal.html), [dec2bin](https://www.rapidtables.com/convert/number/decimal-to-binary.html))
