@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 06:28:13 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 06:36:14 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ static void __sha256_step(Sha2Context* context)
 {
     uint32_t w[64];
 
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 16; i += 1)
         w[i] = context->data.sha256.buffer.u32[i];
 
     {
