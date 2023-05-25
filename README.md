@@ -44,3 +44,9 @@ git clone --recursive https://github.com/benjaminbrassart/ft_ssl.git ft_ssl
 cd ft_ssl
 make
 ```
+
+## Tools
+
+- [sha256algorithm.com](https://sha256algorithm.com/) &mdash; Step-by-step SHA256 visualizer
+- [rapidtables.com](https://www.rapidtables.com/) &mdash; Base conversions ([bin2dec](https://www.rapidtables.com/convert/number/binary-to-decimal.html), [dec2bin](https://www.rapidtables.com/convert/number/decimal-to-binary.html))
+- [Little to big endian converter](https://blockchain-academy.hs-mittweida.de/litte-big-endian-converter/)

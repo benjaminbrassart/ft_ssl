@@ -5,22 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/23 17:25:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:33:48 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/25 06:28:13 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/**
- * @file sha2.c
- * This is an implementation of the SHA-2 hashing algorithms family.
- *
- * @see https://en.wikipedia.org/wiki/SHA-2#Pseudocode
- */
-
 #include "ft_ssl/sha2.h"
-#include <stddef.h>
-#include <stdint.h>
-#include <string.h>
+#include "libft/ft.h"
+#include <byteswap.h>
 
 #define A 0
 #define B 1
@@ -31,19 +23,12 @@
 #define G 6
 #define H 7
 
-/** K for SHA-224 and SHA-256 */
-static uint32_t const K_32[64];
-/** Initial hash values for SHA-224 */
-static uint32_t const HASH_VARS_224[8];
-/** Initial hash values for SHA-256 */
 static uint32_t const HASH_VARS_256[8];
 
-/** K for SHA-384 and SHA-512 */
-static uint64_t const K_64[80];
-/** Initial hash values for SHA-384 */
-static uint64_t const HASH_VARS_384[8];
-/** Initial hash values for SHA-512 */
-static uint64_t const HASH_VARS_512[8];
+static void __sha224_init(Sha2Context* context);
+static void __sha256_init(Sha2Context* context);
+static void __sha384_init(Sha2Context* context);
+static void __sha512_init(Sha2Context* context);
 
 static void __sha224_update(Sha2Context* context, void const* data, size_t len);
 static void __sha256_update(Sha2Context* context, void const* data, size_t len);
@@ -55,15 +40,13 @@ static void __sha256_digest(Sha2Context* context, void* output);
 static void __sha384_digest(Sha2Context* context, void* output);
 static void __sha512_digest(Sha2Context* context, void* output);
 
-/**
- * Rotate a 32-bits word by n bits to the right
- */
-static inline uint32_t __rotate_right32(uint32_t word, uint32_t n);
+static void __sha224_step(Sha2Context* context) __attribute__((unused));
+static void __sha256_step(Sha2Context* context);
+static void __sha384_step(Sha2Context* context) __attribute__((unused));
+static void __sha512_step(Sha2Context* context) __attribute__((unused));
 
-/**
- * Rotate a 64-bits word by n bits to the right
- */
-static inline uint64_t __rotate_right64(uint64_t word, uint64_t n);
+static uint32_t __rotate_right_u32(uint32_t word, uint32_t n);
+static uint64_t __rotate_right_u64(uint64_t word, uint64_t n) __attribute__((unused));
 
 static uint32_t const K_32[64] = {
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
@@ -84,101 +67,28 @@ static uint32_t const K_32[64] = {
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
 };
 
-static uint32_t const HASH_VARS_224[8] = {
-    0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,
-    0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4,
-};
-
 static uint32_t const HASH_VARS_256[8] = {
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
 };
 
-static uint64_t const K_64[80] = {
-0x428a2f98d728ae22, 0x7137449123ef65cd,
-0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
-0x3956c25bf348b538, 0x59f111f1b605d019,
-0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
-0xd807aa98a3030242, 0x12835b0145706fbe,
-0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
-0x72be5d74f27b896f, 0x80deb1fe3b1696b1,
-0x9bdc06a725c71235, 0xc19bf174cf692694,
-0xe49b69c19ef14ad2, 0xefbe4786384f25e3,
-0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65,
-0x2de92c6f592b0275, 0x4a7484aa6ea6e483,
-0x5cb0a9dcbd41fbd4, 0x76f988da831153b5,
-0x983e5152ee66dfab, 0xa831c66d2db43210,
-0xb00327c898fb213f, 0xbf597fc7beef0ee4,
-0xc6e00bf33da88fc2, 0xd5a79147930aa725,
-0x06ca6351e003826f, 0x142929670a0e6e70,
-0x27b70a8546d22ffc, 0x2e1b21385c26c926,
-0x4d2c6dfc5ac42aed, 0x53380d139d95b3df,
-0x650a73548baf63de, 0x766a0abb3c77b2a8,
-0x81c2c92e47edaee6, 0x92722c851482353b,
-0xa2bfe8a14cf10364, 0xa81a664bbc423001,
-0xc24b8b70d0f89791, 0xc76c51a30654be30,
-0xd192e819d6ef5218, 0xd69906245565a910,
-0xf40e35855771202a, 0x106aa07032bbd1b8,
-0x19a4c116b8d2d0c8, 0x1e376c085141ab53,
-0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8,
-0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb,
-0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3,
-0x748f82ee5defb2fc, 0x78a5636f43172f60,
-0x84c87814a1f0ab72, 0x8cc702081a6439ec,
-0x90befffa23631e28, 0xa4506cebde82bde9,
-0xbef9a3f7b2c67915, 0xc67178f2e372532b,
-0xca273eceea26619c, 0xd186b8c721c0c207,
-0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178,
-0x06f067aa72176fba, 0x0a637dc5a2c898a6,
-0x113f9804bef90dae, 0x1b710b35131c471b,
-0x28db77f523047d84, 0x32caab7b40c72493,
-0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
-0x4cc5d4becb3e42b6, 0x597f299cfc657e2a,
-0x5fcb6fab3ad6faec, 0x6c44198c4a475817,
-};
-
-static uint64_t const HASH_VARS_384[8] = {
-    0xcbbb9d5dc1059ed8,
-    0x629a292a367cd507,
-    0x9159015a3070dd17, 0x152fecd8f70e5939,
-    0x67332667ffc00b31, 0x8eb44a8768581511,
-    0xdb0c2e0d64f98fa7, 0x47b5481dbefa4fa4
-};
-
-static uint64_t const HASH_VARS_512[8] = {
-    0x6a09e667f3bcc908, 0xbb67ae8584caa73b,
-    0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
-    0x510e527fade682d1, 0x9b05688c2b3e6c1f,
-    0x1f83d9abfb41bd6b, 0x5be0cd19137e2179,
-};
-
 void sha2_init(Sha2Context* context, Sha2Algorithm algorithm)
 {
+    void (*init_fn)(Sha2Context*);
+
     context->alg = algorithm;
     context->length = 0;
+
     switch (algorithm)
     {
-        case SHA224:
-            context->__update = __sha224_update;
-            context->__digest = __sha224_digest;
-            break;
-        case SHA256:
-            context->__update = __sha256_update;
-            context->__digest = __sha256_digest;
-            break;
-        case SHA384:
-            context->__update = __sha384_update;
-            context->__digest = __sha384_digest;
-            break;
-        case SHA512:
-            context->__update = __sha512_update;
-            context->__digest = __sha512_digest;
-            break;
-        default:
-            context->__update = NULL;
-            context->__digest = NULL;
-            break;
+        case SHA224: init_fn = __sha224_init; break;
+        case SHA256: init_fn = __sha256_init; break;
+        case SHA384: init_fn = __sha384_init; break;
+        case SHA512: init_fn = __sha512_init; break;
+        default:     init_fn = NULL; break;
     }
+
+    init_fn(context);
 }
 
 void sha2_update(Sha2Context* context, void const* data, size_t len)
@@ -191,52 +101,205 @@ void sha2_digest(Sha2Context* context, void* output)
     context->__digest(context, output);
 }
 
-static inline uint32_t __rotate_right32(uint32_t word, uint32_t n)
+static void __sha224_init(Sha2Context* context)
+{
+    context->__update = __sha224_update;
+    context->__digest = __sha224_digest;
+}
+
+static void __sha256_init(Sha2Context* context)
+{
+    context->__update = __sha256_update;
+    context->__digest = __sha256_digest;
+
+    for (int i = 0; i < 8; i += 1)
+        context->data.sha256.hash_vars[i] = HASH_VARS_256[i];
+}
+
+static void __sha384_init(Sha2Context* context)
+{
+    context->__update = __sha384_update;
+    context->__digest = __sha384_digest;
+}
+
+static void __sha512_init(Sha2Context* context)
+{
+    context->__update = __sha512_update;
+    context->__digest = __sha512_digest;
+}
+
+static void __sha256_update(Sha2Context* context, void const* data, size_t len)
+{
+    uint8_t const* bytes = (uint8_t const*)data;
+    size_t n = len;
+
+    while (n > 0)
+    {
+        context->data.sha256.buffer.u8[context->length % 64] = *bytes;
+
+        bytes += 1;
+        n -= 1;
+
+        if (context->length == UINT64_MAX)
+            context->length = 0;
+        else
+        {
+            context->length += 1;
+
+            if (context->length % 4 == 0)
+                context->data.sha256.buffer.u32[(context->length / 4) - 1] = bswap_32(context->data.sha256.buffer.u32[(context->length / 4) - 1]);
+        }
+
+        if (context->length % 64 == 0)
+            __sha256_step(context);
+    }
+}
+
+static void __sha256_digest(Sha2Context* context, void* output)
+{
+    static uint8_t const _BIT = 0x80;
+    static uint8_t const _PADDING[64] = {};
+    uint32_t* hash = (uint32_t*)output;
+
+    // TODO check for overflow;
+    uint64_t original_length = context->length * 8;
+    original_length = bswap_64(original_length);
+
+    context->__update(context, &_BIT, 1);
+
+    size_t len_mod = context->length % 64;
+    size_t padding_size;
+
+    if (len_mod <= 56)
+        padding_size = 56 - len_mod;
+    else
+        padding_size = (64 - len_mod) + 56;
+
+    context->__update(context, _PADDING, padding_size);
+    context->__update(context, &original_length, sizeof (original_length));
+
+    for (int i = 0; i < 8; i += 1)
+        hash[i] = bswap_32(context->data.sha256.hash_vars[i]);
+}
+
+static void __sha256_step(Sha2Context* context)
+{
+    uint32_t w[64];
+
+    for (int i = 0; i < 16; ++i)
+        w[i] = context->data.sha256.buffer.u32[i];
+
+    {
+        uint32_t sigma0;
+        uint32_t sigma1;
+
+        for (int i = 16; i < 64; i += 1)
+        {
+            sigma0 = (__rotate_right_u32(w[i - 15], 7) ^ __rotate_right_u32(w[i - 15], 18)) ^ (w[i - 15] >> 3);
+            sigma1 = (__rotate_right_u32(w[i - 2], 17) ^ __rotate_right_u32(w[i - 2], 19)) ^ (w[i - 2] >> 10);
+            w[i] = w[i - 16] + sigma0 + w[i - 7] + sigma1;
+        }
+    }
+
+    uint32_t vars[8];
+
+    for (int i = 0; i < 8; i += 1)
+        vars[i] = context->data.sha256.hash_vars[i];
+
+    {
+        uint32_t sigma0;
+        uint32_t sigma1;
+
+        for (int i = 0; i < 64; i += 1)
+        {
+            uint32_t ch;
+            uint32_t maj;
+            uint32_t temp1;
+            uint32_t temp2;
+
+            sigma1 = __rotate_right_u32(vars[E], 6) ^ __rotate_right_u32(vars[E], 11) ^ __rotate_right_u32(vars[E], 25);
+            ch = (vars[E] & vars[F]) ^ (~vars[E] & vars[G]);
+            temp1 = vars[H] + sigma1 + ch + K_32[i] + w[i];
+
+            sigma0 = __rotate_right_u32(vars[A], 2) ^ __rotate_right_u32(vars[A], 13) ^ __rotate_right_u32(vars[A], 22);
+            maj = (vars[A] & vars[B]) ^ (vars[A] & vars[C]) ^ (vars[B] & vars[C]);
+            temp2 = sigma0 + maj;
+
+            vars[H] = vars[G];
+            vars[G] = vars[F];
+            vars[F] = vars[E];
+            vars[E] = vars[D] + temp1;
+            vars[D] = vars[C];
+            vars[C] = vars[B];
+            vars[B] = vars[A];
+            vars[A] = temp1 + temp2;
+        }
+
+        for (int i = 0; i < 8; i += 1)
+            context->data.sha256.hash_vars[i] += vars[i];
+    }
+}
+
+static uint32_t __rotate_right_u32(uint32_t word, uint32_t n)
 {
     return (word >> n) | (word << (32 - n));
 }
 
-static inline uint64_t __rotate_right64(uint64_t word, uint64_t n)
+static uint64_t __rotate_right_u64(uint64_t word, uint64_t n)
 {
     return (word >> n) | (word << (64 - n));
 }
 
 static void __sha224_update(Sha2Context* context, void const* data, size_t len)
 {
-    // TODO
-}
-
-static void __sha256_update(Sha2Context* context, void const* data, size_t len)
-{
-    // TODO
+    (void)context;
+    (void)data;
+    (void)len;
 }
 
 static void __sha384_update(Sha2Context* context, void const* data, size_t len)
 {
-    // TODO
+    (void)context;
+    (void)data;
+    (void)len;
 }
 
 static void __sha512_update(Sha2Context* context, void const* data, size_t len)
 {
-    // TODO
+    (void)context;
+    (void)data;
+    (void)len;
 }
 
 static void __sha224_digest(Sha2Context* context, void* output)
 {
-    // TODO
-}
-
-static void __sha256_digest(Sha2Context* context, void* output)
-{
-    // TODO
+    (void)context;
+    (void)output;
 }
 
 static void __sha384_digest(Sha2Context* context, void* output)
 {
-    // TODO
+    (void)context;
+    (void)output;
 }
 
 static void __sha512_digest(Sha2Context* context, void* output)
 {
-    // TODO
+    (void)context;
+    (void)output;
+}
+
+static void __sha224_step(Sha2Context* context)
+{
+    (void)context;
+}
+
+static void __sha384_step(Sha2Context* context)
+{
+    (void)context;
+}
+
+static void __sha512_step(Sha2Context* context)
+{
+    (void)context;
 }
