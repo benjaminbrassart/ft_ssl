@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate.h                                           :+:      :+:    :+:   */
+/*   test_rotate.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/25 21:09:08 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 21:18:54 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/25 21:18:34 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/25 22:53:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ROTATE_H
-# define ROTATE_H
+#include "ft_ssl/rotate.h"
+#include <cassert>
 
-# include "ft_ssl/cpp.h"
-# include <stdint.h>
+int main()
+{
+    {
+        auto n = 0x01ULL;
 
-CPP_BEGIN
-
-uint32_t rotate_left_u32(uint32_t n, uint32_t r);
-uint32_t rotate_right_u32(uint32_t n, uint32_t r);
-
-uint64_t rotate_left_u64(uint64_t n, uint64_t r);
-uint64_t rotate_right_u64(uint64_t n, uint64_t r);
-
-CPP_END
-
-#endif // ROTATE_H
+        assert(rotate_left_u64(n, 0) == n);
+        assert(rotate_left_u64(n, 1) == 0x02ULL);
+        assert(rotate_right_u64(n, 0) == n);
+        assert(rotate_right_u64(n, 1) == 0x8000000000000000ULL);
+    }
+}
