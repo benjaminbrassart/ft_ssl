@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 01:10:12 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:32:30 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 01:14:51 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char* memtox(char* dst, void const* src, size_t n)
 {
     uint8_t const* bytes = (uint8_t const*)src;
 
-    for (size_t i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; i += 1)
     {
         dst[i * 2] = BASE_HEX[(bytes[i] >> 4) & 0xF];
         dst[i * 2 + 1] = BASE_HEX[(bytes[i]) & 0xF];
