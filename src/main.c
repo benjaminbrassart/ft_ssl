@@ -6,14 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 02:39:12 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 06:24:12 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/hash.h"
 #include "ft_ssl/hex.h"
 #include "ft_ssl/md5.h"
-#include "ft_ssl/sha22.h"
+#include "ft_ssl/sha2.h"
 #include "libft/ft.h"
 #include <errno.h>
 #include <fcntl.h>
