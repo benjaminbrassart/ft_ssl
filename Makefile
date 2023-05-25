@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 22:51:31 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 22:57:39 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,8 @@ CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I$(DIR_LIBFT)/inc
 AR := ar
 ARFLAGS := rs
 
-LDLIBS := -lft -lft_ssl
-LDFLAGS := -L$(dir $(NAME_LIBFT)) -L.
+LDLIBS := -lft_ssl -lft
+LDFLAGS := -L. -L$(dir $(NAME_LIBFT))
 
 RM := rm -vf
 MKDIR := mkdir -vp
@@ -45,7 +45,7 @@ DEP_MAIN := $(OBJ_MAIN:.o=.d)
 $(NAME): $(OBJ_MAIN) $(NAME_LIBFT) $(NAME_LIBFT_SSL)
 	$(CC) $< -o $@ $(LDFLAGS) $(LDLIBS)
 
-$(OBJ): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
+$(OBJ) $(OBJ_MAIN): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
 	@$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $< -o $@
 
