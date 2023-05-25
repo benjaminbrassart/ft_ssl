@@ -6,19 +6,23 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 21:13:12 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/25 22:28:11 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := ft_ssl
 DIR_LIBFT := libft
 NAME_LIBFT := $(DIR_LIBFT)/libft.a
+NAME_LIBFT_SSL := libft_ssl.a
 
 CC := cc
 CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I$(DIR_LIBFT)/include
 
-LDLIBS := -lft
-LDFLAGS := -L$(dir $(NAME_LIBFT))
+AR := ar
+ARFLAGS := rs
+
+LDLIBS := -lft -lft_ssl
+LDFLAGS := -L$(dir $(NAME_LIBFT)) -L.
 
 RM := rm -vf
 MKDIR := mkdir -vp
@@ -26,8 +30,7 @@ MKDIR := mkdir -vp
 DIR_SRC := src
 DIR_OBJ := obj
 
-SRC := main.c
-SRC += md5.c
+SRC := md5.c
 SRC += sha2.c
 SRC += hash.c
 SRC += hex.c
@@ -35,17 +38,24 @@ SRC += rotate.c
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
-$(NAME): $(OBJ) $(NAME_LIBFT)
-	$(CC) $(filter %.o,$^) -o $@ $(LDFLAGS) $(LDLIBS)
+SRC_MAIN := main.c
+OBJ_MAIN := $(SRC_MAIN:%.c=$(DIR_OBJ)/%.o)
+DEP_MAIN := $(OBJ_MAIN:.o=.d)
+
+$(NAME): $(OBJ_MAIN) $(NAME_LIBFT) $(NAME_LIBFT_SSL)
+	$(CC) $< -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(OBJ): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
 	@$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $< -o $@
 
+$(NAME_LIBFT_SSL): $(OBJ)
+	$(AR) $(ARFLAGS) $@ $?
+
 $(NAME_LIBFT):
 	@$(MAKE) $(MAKEFLAGS) -C $(@D)
 
--include $(DEP)
+-include $(DEP) $(DEP_MAIN)
 
 .PHONY: all clean fclean re
 
@@ -56,7 +66,7 @@ clean:
 	@$(MAKE) -C $(DIR_LIBFT) clean
 
 fclean: clean
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) $(NAME_LIBFT_SSL)
 	@$(MAKE) -C $(DIR_LIBFT) fclean
 
 re: fclean all
