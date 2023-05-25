@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 06:23:51 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/25 06:28:13 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,4 +287,19 @@ static void __sha512_digest(Sha2Context* context, void* output)
 {
     (void)context;
     (void)output;
+}
+
+static void __sha224_step(Sha2Context* context)
+{
+    (void)context;
+}
+
+static void __sha384_step(Sha2Context* context)
+{
+    (void)context;
+}
+
+static void __sha512_step(Sha2Context* context)
+{
+    (void)context;
 }
