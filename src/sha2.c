@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 22:33:10 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 22:34:01 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,9 +151,7 @@ static void __sha256_digest(Sha2Context* context, void* output)
     static uint8_t const _PADDING[64] = {};
     uint32_t* hash = (uint32_t*)output;
 
-    uint64_t original_length = context->length * 8;
-
-    original_length = ft_bswap_64(original_length);
+    uint64_t original_length = ft_bswap_64(context->length * 8);
 
     context->__update(context, &_BIT, 1);
 
