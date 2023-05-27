@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/27 23:28:55 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/27 23:44:18 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,7 @@ MKDIR := mkdir -vp
 DIR_SRC := src
 DIR_OBJ := obj
 
-SRC := main.c
-SRC += md5.c
+SRC := md5.c
 SRC += sha1.c
 SRC += sha2.c
 SRC += hash.c
