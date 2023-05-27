@@ -50,3 +50,8 @@ make
 - [sha256algorithm.com](https://sha256algorithm.com/) &mdash; Step-by-step SHA256 visualizer
 - [rapidtables.com](https://www.rapidtables.com/) &mdash; Base conversions ([bin2dec](https://www.rapidtables.com/convert/number/binary-to-decimal.html), [dec2bin](https://www.rapidtables.com/convert/number/decimal-to-binary.html))
 - [Little to big endian converter](https://blockchain-academy.hs-mittweida.de/litte-big-endian-converter/)
+
+
+## Documentation
+
+- [SM3](https://raw.githubusercontent.com/guanzhi/GM-Standards/master/GMT%E5%AF%86%E7%A0%81%E8%A1%8C%E6%A0%87/GMT%200004-2012%20SM3%E5%AF%86%E7%A0%81%E6%9D%82%E5%87%91%E7%AE%97%E6%B3%95.pdf)
