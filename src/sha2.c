@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 06:14:25 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 06:34:26 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@
 #define H 7
 
 static uint32_t const HASH_VARS_256[8];
-
-void sha224_init(Sha2Context* context);
-void sha256_init(Sha2Context* context);
-void sha384_init(Sha2Context* context);
-void sha512_init(Sha2Context* context);
 
 static void __sha224_update(Sha2Context* context, void const* data, size_t len);
 static void __sha256_update(Sha2Context* context, void const* data, size_t len);
