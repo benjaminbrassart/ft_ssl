@@ -7,7 +7,7 @@ hash_real() {
 }
 
 hash_ft() {
-    ./ft_ssl "$1" -s "$2"
+    ./ft_ssl "$1" -q -s "$2"
 }
 
 output_real="$(mktemp)"

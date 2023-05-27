@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Launch",
-      "args": ["a"],
+      "args": [],
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/ft_ssl",

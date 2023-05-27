@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 23:38:15 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 06:24:04 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 06:07:27 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,14 @@ void sha2_init(Sha2Context* context, Sha2Algorithm algorithm);
 void sha2_update(Sha2Context* context, void const* data, size_t len);
 
 void sha2_digest(Sha2Context* context, void* output);
+
+void sha224_init(Sha2Context* context);
+
+void sha256_init(Sha2Context* context);
+
+void sha384_init(Sha2Context* context);
+
+void sha512_init(Sha2Context* context);
 
 CPP_END
 

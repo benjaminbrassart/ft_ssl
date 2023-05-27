@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 21:16:32 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 21:16:05 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@
 #define H 7
 
 static uint32_t const HASH_VARS_256[8];
-
-static void __sha224_init(Sha2Context* context);
-static void __sha256_init(Sha2Context* context);
-static void __sha384_init(Sha2Context* context);
-static void __sha512_init(Sha2Context* context);
 
 static void __sha224_update(Sha2Context* context, void const* data, size_t len);
 static void __sha256_update(Sha2Context* context, void const* data, size_t len);
@@ -73,21 +68,14 @@ static uint32_t const HASH_VARS_256[8] = {
 
 void sha2_init(Sha2Context* context, Sha2Algorithm algorithm)
 {
-    void (*init_fn)(Sha2Context*);
-
-    context->alg = algorithm;
-    context->length = 0;
-
     switch (algorithm)
     {
-        case SHA224: init_fn = __sha224_init; break;
-        case SHA256: init_fn = __sha256_init; break;
-        case SHA384: init_fn = __sha384_init; break;
-        case SHA512: init_fn = __sha512_init; break;
-        default:     init_fn = NULL; break;
+        case SHA224: sha224_init(context); break;
+        case SHA256: sha256_init(context); break;
+        case SHA384: sha384_init(context); break;
+        case SHA512: sha512_init(context); break;
+        default: break;
     }
-
-    init_fn(context);
 }
 
 void sha2_update(Sha2Context* context, void const* data, size_t len)
@@ -100,14 +88,18 @@ void sha2_digest(Sha2Context* context, void* output)
     context->__digest(context, output);
 }
 
-static void __sha224_init(Sha2Context* context)
+void sha224_init(Sha2Context* context)
 {
+    context->alg = SHA224;
+    context->length = 0;
     context->__update = __sha224_update;
     context->__digest = __sha224_digest;
 }
 
-static void __sha256_init(Sha2Context* context)
+void sha256_init(Sha2Context* context)
 {
+    context->alg = SHA256;
+    context->length = 0;
     context->__update = __sha256_update;
     context->__digest = __sha256_digest;
 
@@ -115,14 +107,18 @@ static void __sha256_init(Sha2Context* context)
         context->data.sha256.hash_vars[i] = HASH_VARS_256[i];
 }
 
-static void __sha384_init(Sha2Context* context)
+void sha384_init(Sha2Context* context)
 {
+    context->alg = SHA384;
+    context->length = 0;
     context->__update = __sha384_update;
     context->__digest = __sha384_digest;
 }
 
-static void __sha512_init(Sha2Context* context)
+void sha512_init(Sha2Context* context)
 {
+    context->alg = SHA512;
+    context->length = 0;
     context->__update = __sha512_update;
     context->__digest = __sha512_digest;
 }
@@ -142,12 +138,7 @@ static void __sha256_update(Sha2Context* context, void const* data, size_t len)
         if (context->length == UINT64_MAX)
             context->length = 0;
         else
-        {
             context->length += 1;
-
-            if (context->length % 4 == 0)
-                context->data.sha256.buffer.u32[(context->length / 4) - 1] = ft_bswap_32(context->data.sha256.buffer.u32[(context->length / 4) - 1]);
-        }
 
         if (context->length % 64 == 0)
             __sha256_step(context);
@@ -162,6 +153,7 @@ static void __sha256_digest(Sha2Context* context, void* output)
 
     // TODO check for overflow;
     uint64_t original_length = context->length * 8;
+
     original_length = ft_bswap_64(original_length);
 
     context->__update(context, &_BIT, 1);
@@ -178,7 +170,7 @@ static void __sha256_digest(Sha2Context* context, void* output)
     context->__update(context, &original_length, sizeof (original_length));
 
     for (int i = 0; i < 8; i += 1)
-        hash[i] = ft_bswap_32(context->data.sha256.hash_vars[i]);
+        hash[i] = bswap_32(context->data.sha256.hash_vars[i]);
 }
 
 static void __sha256_step(Sha2Context* context)
@@ -186,7 +178,7 @@ static void __sha256_step(Sha2Context* context)
     uint32_t w[64];
 
     for (int i = 0; i < 16; i += 1)
-        w[i] = context->data.sha256.buffer.u32[i];
+        w[i] = ft_bswap_32(context->data.sha256.buffer.u32[i]);
 
     {
         uint32_t sigma0;
