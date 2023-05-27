@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 18:13:55 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 19:11:58 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/28 00:16:09 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
  */
 
 #include "ft_ssl/sha1.h"
+#include "ft_ssl/rotate.h"
 #include "libft/ft.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -30,7 +31,6 @@
 
 static uint32_t const HASH_VARS[5];
 
-static inline uint32_t __rotate_left(uint32_t word, uint32_t n);
 static void __sha1_step(Sha1Context* context);
 
 static uint32_t const HASH_VARS[5] = {
@@ -72,9 +72,7 @@ void sha1_digest(Sha1Context* context, void* output)
     static uint8_t const _PADDING[64] = {};
     uint32_t* hash = (uint32_t*)output;
 
-    // TODO check for overflow;
     uint64_t original_length = context->length * 8;
-    // original_length = ft_bswap_64(original_length);
 
     sha1_update(context, &_BIT, 1);
 
@@ -93,11 +91,6 @@ void sha1_digest(Sha1Context* context, void* output)
         hash[i] = context->hash_vars[i];
 }
 
-static inline uint32_t __rotate_left(uint32_t word, uint32_t n)
-{
-    return (word << n) | (word >> (32 - n));
-}
-
 static void __sha1_step(Sha1Context* context)
 {
     uint32_t vars[5];
@@ -107,7 +100,7 @@ static void __sha1_step(Sha1Context* context)
         w[i] = context->buffer.u32[i];
 
     for (int i = 16; i < 80; i += 1)
-        w[i] = __rotate_left(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);
+        w[i] = rotate_left_u32(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);
 
     for (int i = 0; i < 5; i += 1)
         vars[i] = context->hash_vars[i];
@@ -137,11 +130,11 @@ static void __sha1_step(Sha1Context* context)
                 break;
         }
 
-        uint32_t temp = __rotate_left(vars[A], 5) +f + vars[E] + k + w[i];
+        uint32_t temp = rotate_left_u32(vars[A], 5) +f + vars[E] + k + w[i];
 
         vars[E] = vars[D];
         vars[D] = vars[C];
-        vars[C] = __rotate_left(vars[B], 30);
+        vars[C] = rotate_left_u32(vars[B], 30);
         vars[B] = vars[A];
         vars[A] = temp;
     }
