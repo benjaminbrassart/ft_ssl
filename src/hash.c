@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 23:23:16 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:32:26 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 07:42:18 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ int hash_options_parse(HashOptions* options, int argc, char const* argv[])
         switch (argv[i][1])
         {
             case 'p':
-                options->bits &= HASHOPT_PRINT_STDIN;
+                options->bits |= HASHOPT_PRINT_STDIN;
                 break;
             case 'q':
-                options->bits &= HASHOPT_QUIET;
+                options->bits |= HASHOPT_QUIET;
                 break;
             case 'r':
-                options->bits &= HASHOPT_REVERSE;
+                options->bits |= HASHOPT_REVERSE;
                 break;
             case 's':
                 i += 1;

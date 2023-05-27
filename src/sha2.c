@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 00:20:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 19:56:27 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 21:16:05 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@
 #define H 7
 
 static uint32_t const HASH_VARS_256[8];
-
-static void __sha224_init(Sha2Context* context);
-static void __sha256_init(Sha2Context* context);
-static void __sha384_init(Sha2Context* context);
-static void __sha512_init(Sha2Context* context);
 
 static void __sha224_update(Sha2Context* context, void const* data, size_t len);
 static void __sha256_update(Sha2Context* context, void const* data, size_t len);
@@ -73,21 +68,14 @@ static uint32_t const HASH_VARS_256[8] = {
 
 void sha2_init(Sha2Context* context, Sha2Algorithm algorithm)
 {
-    void (*init_fn)(Sha2Context*);
-
-    context->alg = algorithm;
-    context->length = 0;
-
     switch (algorithm)
     {
-        case SHA224: init_fn = __sha224_init; break;
-        case SHA256: init_fn = __sha256_init; break;
-        case SHA384: init_fn = __sha384_init; break;
-        case SHA512: init_fn = __sha512_init; break;
-        default:     init_fn = NULL; break;
+        case SHA224: sha224_init(context); break;
+        case SHA256: sha256_init(context); break;
+        case SHA384: sha384_init(context); break;
+        case SHA512: sha512_init(context); break;
+        default: break;
     }
-
-    init_fn(context);
 }
 
 void sha2_update(Sha2Context* context, void const* data, size_t len)
@@ -100,14 +88,18 @@ void sha2_digest(Sha2Context* context, void* output)
     context->__digest(context, output);
 }
 
-static void __sha224_init(Sha2Context* context)
+void sha224_init(Sha2Context* context)
 {
+    context->alg = SHA224;
+    context->length = 0;
     context->__update = __sha224_update;
     context->__digest = __sha224_digest;
 }
 
-static void __sha256_init(Sha2Context* context)
+void sha256_init(Sha2Context* context)
 {
+    context->alg = SHA256;
+    context->length = 0;
     context->__update = __sha256_update;
     context->__digest = __sha256_digest;
 
@@ -115,14 +107,18 @@ static void __sha256_init(Sha2Context* context)
         context->data.sha256.hash_vars[i] = HASH_VARS_256[i];
 }
 
-static void __sha384_init(Sha2Context* context)
+void sha384_init(Sha2Context* context)
 {
+    context->alg = SHA384;
+    context->length = 0;
     context->__update = __sha384_update;
     context->__digest = __sha384_digest;
 }
 
-static void __sha512_init(Sha2Context* context)
+void sha512_init(Sha2Context* context)
 {
+    context->alg = SHA512;
+    context->length = 0;
     context->__update = __sha512_update;
     context->__digest = __sha512_digest;
 }
