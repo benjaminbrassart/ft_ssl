@@ -6,13 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 08:01:10 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 23:44:03 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/hash.h"
 #include "ft_ssl/hex.h"
 #include "ft_ssl/md5.h"
+#include "ft_ssl/sha1.h"
 #include "ft_ssl/sha2.h"
 #include "ft_ssl/command.h"
 #include "libft/ft.h"
@@ -40,10 +41,12 @@ static CommandLookup const* __getcommand(char const* name);
 static void __help(void);
 static void __help_help(void);
 static void __help_md5(void);
+static void __help_sha1(void);
 static void __help_sha256(void);
 static int __command_help(int argc, char const* argv[]);
 static int __command_exit();
 static int __command_md5(int argc, char const* argv[]);
+static int __command_sha1(int argc, char const* argv[]);
 static int __command_sha256(int argc, char const* argv[]);
 
 static CommandGroup const COMMAND_GROUPS[] = {
@@ -53,6 +56,7 @@ static CommandGroup const COMMAND_GROUPS[] = {
     }},
     {"Message Digest commands", {
         {"md5", __command_md5, __help_md5},
+        {"sha1", __command_sha1, __help_sha1},
         {"sha256", __command_sha256, __help_sha256},
     }},
     {"Cipher commands", {
@@ -214,6 +218,13 @@ static int __command_md5(int argc, char const* argv[])
     return __command_digest(argc, argv, "MD5", &ctx, md5_init, md5_update, md5_digest, MD5_OUT_SIZE);
 }
 
+static int __command_sha1(int argc, char const* argv[])
+{
+    Sha1Context context;
+
+    return __command_digest(argc, argv, "SHA1", &context, sha1_init, sha1_update, sha1_digest, SHA1_OUT_SIZE);
+}
+
 static int __command_sha256(int argc, char const* argv[])
 {
     Sha2Context ctx;
@@ -292,6 +303,11 @@ static void __help(void)
 static void __help_md5(void)
 {
     __help_digest("md5");
+}
+
+static void __help_sha1(void)
+{
+    return __help_digest("sha1");
 }
 
 static void __help_sha256(void)
