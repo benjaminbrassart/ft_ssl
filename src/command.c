@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 06:10:38 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 06:32:59 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,7 @@ static CommandGroup const COMMAND_GROUPS[] = {
     }},
     {"Message Digest commands", {
         {"md5", __command_md5, __help_md5},
-        {"rmd160", __command_md5, __help_md5},
-        {"sha224", __command_sha256, __help_sha256},
         {"sha256", __command_sha256, __help_sha256},
-        {"sha384", __command_sha256, __help_sha256},
-        {"sha512", __command_sha256, __help_sha256},
-        {"sm3", __command_sha256, __help_sha256},
-        {"whirlpool", __command_md5, __help_md5},
     }},
     {"Cipher commands", {
     }},
