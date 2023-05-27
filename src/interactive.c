@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:27:34 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 07:01:14 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 22:27:49 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,6 @@
 #include <stdlib.h>
 #include <readline/history.h>
 #include <readline/readline.h>
-
-typedef struct string_node StringNode;
-
-struct string_node
-{
-    char* str;
-    StringNode* next;
-};
-
-typedef struct string_list
-{
-    StringNode* begin;
-    StringNode* end;
-    size_t size;
-} StringList;
 
 static char** __split_input(char const* line);
 
