@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 23:04:11 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/27 04:43:25 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I$(DIR_LIBFT)/inc
 AR := ar
 ARFLAGS := rs
 
-LDLIBS := -lft_ssl -lft
+LDLIBS := -lft_ssl -lft -lreadline
 LDFLAGS := -L. -L$(dir $(NAME_LIBFT))
 
 RM := rm -vf
@@ -35,6 +35,8 @@ SRC += sha2.c
 SRC += hash.c
 SRC += hex.c
 SRC += rotate.c
+SRC += interactive.c
+SRC += command.c
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
