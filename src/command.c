@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 05:47:56 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 06:10:38 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,21 +74,25 @@ int execute_command(char const* command, int argc, char const** argv)
     return 127;
 }
 
-static int __command_md5(int argc, char const* argv[])
+static int __command_digest(int argc, char const* argv[], void* context, void (*init)(), void (*update)(), void (*digest)(), size_t out_size)
 {
     HashOptions options;
     int result = EXIT_SUCCESS;
+    char* hash = malloc(out_size * 3 + 1);
+    char* hex = hash + out_size;
 
-    if (hash_options_parse(&options, argc, argv) == EXIT_FAILURE)
+    if (hash == NULL || hash_options_parse(&options, argc, argv) == EXIT_FAILURE)
+    {
+        free(hash);
         return EXIT_FAILURE;
+    }
 
     HashInput const* input;
-    Md5Context ctx;
 
     for (size_t i = 0; i < options.inputs_size; ++i)
     {
         input = &options.inputs[i];
-        md5_init(&ctx);
+        init(context);
 
         switch (input->type)
         {
@@ -102,7 +106,7 @@ static int __command_md5(int argc, char const* argv[])
                 {
                     int err = errno;
 
-                    fprintf(stderr, "ft_ssl: %s: %s (%d)\n", input->value, strerror(err), err);
+                    fprintf(stderr, "%s: %s\n", input->value, strerror(err));
                     result = EXIT_FAILURE;
                     goto _break_file;
                 }
@@ -117,7 +121,7 @@ static int __command_md5(int argc, char const* argv[])
                     {
                         int err = errno;
 
-                        fprintf(stderr, "ft_ssl: %s: %s (%d)\n", input->value, strerror(err), err);
+                        fprintf(stderr, "%s: %s\n", input->value, strerror(err));
                         result = EXIT_FAILURE;
                         free(read_buffer);
                         goto _break_file;
@@ -133,14 +137,14 @@ static int __command_md5(int argc, char const* argv[])
                     {
                         int err = errno;
 
-                        fprintf(stderr, "ft_ssl: %s: %s (%d)\n", input->value, strerror(err), err);
+                        fprintf(stderr, "%s: %s\n", input->value, strerror(err));
                         result = EXIT_FAILURE;
                         free(read_buffer);
                         goto _break_file;
                     }
                     if (rr == 0)
                         break;
-                    md5_update(&ctx, read_buffer, rr);
+                    update(context, read_buffer, rr);
                 }
 
 _break_file:
@@ -151,117 +155,34 @@ _break_file:
             }
             case InputString:
                 for (char const* s = input->value; *s != '\0'; s += 1)
-                    md5_update(&ctx, s, 1);
+                    update(context, s, 1);
                 break;
             default:
                 continue;
         }
 
-        uint8_t hash[MD5_OUT_SIZE];
-        char hex[MD5_OUT_SIZE * 2 + 1];
-
-        md5_digest(&ctx, hash);
-        memtox(hex, hash, MD5_OUT_SIZE);
+        digest(context, hash);
+        memtox(hex, hash, out_size);
         printf("%s\n", hex);
     }
 
+    free(hash);
     hash_options_cleanup(&options);
     return result;
 }
 
+static int __command_md5(int argc, char const* argv[])
+{
+    Md5Context ctx;
+
+    return __command_digest(argc, argv, &ctx, md5_init, md5_update, md5_digest, MD5_OUT_SIZE);
+}
+
 static int __command_sha256(int argc, char const* argv[])
 {
-    HashOptions options;
-    int result = EXIT_SUCCESS;
-
-    if (hash_options_parse(&options, argc, argv) == EXIT_FAILURE)
-        return EXIT_FAILURE;
-
-    HashInput const* input;
     Sha2Context ctx;
 
-    for (size_t i = 0; i < options.inputs_size; ++i)
-    {
-        input = &options.inputs[i];
-        sha2_init(&ctx, SHA256);
-
-        switch (input->type)
-        {
-            case InputFile:
-            case InputStdin:
-            {
-                int fd = -1;
-                void* read_buffer = malloc(FT_SSL_READ_SIZE);
-
-                if (read_buffer == NULL)
-                {
-                    int err = errno;
-
-                    fprintf(stderr, "ft_ssl: %s: %s (%d)\n", input->value, strerror(err), err);
-                    result = EXIT_FAILURE;
-                    goto _break_file;
-                }
-
-                if (input->type == InputStdin)
-                    fd = STDIN_FILENO;
-                else
-                {
-                    fd = open(input->value, O_RDONLY);
-
-                    if (fd == -1)
-                    {
-                        int err = errno;
-
-                        fprintf(stderr, "ft_ssl: %s: %s (%d)\n", input->value, strerror(err), err);
-                        result = EXIT_FAILURE;
-                        free(read_buffer);
-                        goto _break_file;
-                    }
-                }
-
-                int rr;
-
-                for (;;)
-                {
-                    rr = read(fd, read_buffer, FT_SSL_READ_SIZE);
-                    if (rr < 0)
-                    {
-                        int err = errno;
-
-                        fprintf(stderr, "ft_ssl: %s: %s (%d)\n", input->value, strerror(err), err);
-                        result = EXIT_FAILURE;
-                        free(read_buffer);
-                        goto _break_file;
-                    }
-                    if (rr == 0)
-                        break;
-                    sha2_update(&ctx, read_buffer, rr);
-                }
-
-_break_file:
-                if (fd > 0)
-                    close(fd);
-                free(read_buffer);
-                break;
-            }
-            case InputString:
-                for (char const* s = input->value; *s != '\0'; s += 1)
-                    sha2_update(&ctx, s, 1);
-                break;
-            default:
-                continue;
-        }
-
-        uint8_t hash[SHA256_OUT_SIZE];
-        char hex[SHA256_OUT_SIZE * 2 + 1];
-
-        sha2_digest(&ctx, hash);
-        memtox(hex, hash, SHA256_OUT_SIZE);
-        printf("%s\n", hex);
-    }
-
-    hash_options_cleanup(&options);
-    return result;
+    return __command_digest(argc, argv, &ctx, sha256_init, sha2_update, sha2_digest, SHA256_OUT_SIZE);
 }
 
 static int __command_help(int argc, char const* argv[])
