@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:27:34 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 05:49:00 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 07:01:14 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@ typedef struct string_list
     size_t size;
 } StringList;
 
-static void __help(void);
 static char** __split_input(char const* line);
-static void __free_args(char** args);
 
 int run_interactive(void)
 {
@@ -60,31 +58,20 @@ int run_interactive(void)
             continue;
         }
 
-        if (ft_strcmp(args[0], "exit") == 0)
-        {
-            __free_args(args);
+        int argc = 1;
+
+        while (args[argc] != NULL)
+            argc += 1;
+
+        int result = execute_command(args[0], argc, (char const**)args);
+
+        if (result == EXIT_FORCE)
             return EXIT_SUCCESS;
-        }
-        else if (ft_strcmp(args[0], "help") == 0)
-        {
-            __free_args(args);
-            __help();
-        }
-        else
-        {
-            int argc = 1;
 
-            while (args[argc] != NULL)
-                argc += 1;
-
-            if (execute_command(args[0], argc, (char const**)args) != EXIT_SUCCESS)
-                fprintf(stderr, "error in %s\n", args[0]);
-        }
+        if (result != EXIT_SUCCESS)
+            fprintf(stderr, "error in %s\n", args[0]);
     }
 }
-
-static void __help(void)
-{}
 
 static char** __split_input(char const* line)
 {
@@ -201,12 +188,4 @@ _error:
         free(strings[n]);
     free(strings);
     return NULL;
-}
-
-static void __free_args(char** args)
-{
-    if (args != NULL)
-        for (char** it = args; *args != NULL; args += 1)
-            free(*it);
-    free(args);
 }

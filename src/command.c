@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 06:32:59 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 07:00:23 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,13 @@ static void __help_help(void);
 static void __help_md5(void);
 static void __help_sha256(void);
 static int __command_help(int argc, char const* argv[]);
+static int __command_exit();
 static int __command_md5(int argc, char const* argv[]);
 static int __command_sha256(int argc, char const* argv[]);
 
 static CommandGroup const COMMAND_GROUPS[] = {
     {"Standard commands", {
-        {"exit", NULL, NULL},
+        {"exit", __command_exit, NULL},
         {"help", __command_help, __help_help},
     }},
     {"Message Digest commands", {
@@ -204,6 +205,11 @@ static int __command_help(int argc, char const* argv[])
             return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
+}
+
+static int __command_exit()
+{
+    return EXIT_FORCE;
 }
 
 static void __help_digest(char const* func_name)
