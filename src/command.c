@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 07:00:23 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 08:01:10 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int execute_command(char const* command, int argc, char const** argv)
     return 127;
 }
 
-static int __command_digest(int argc, char const* argv[], void* context, void (*init)(), void (*update)(), void (*digest)(), size_t out_size)
+static int __command_digest(int argc, char const* argv[], char const* name, void* context, void (*init)(), void (*update)(), void (*digest)(), size_t out_size)
 {
     HashOptions options;
     int result = EXIT_SUCCESS;
@@ -95,7 +95,7 @@ static int __command_digest(int argc, char const* argv[], void* context, void (*
             case InputStdin:
             {
                 int fd = -1;
-                void* read_buffer = malloc(FT_SSL_READ_SIZE);
+                char* read_buffer = malloc(FT_SSL_READ_SIZE);
 
                 if (read_buffer == NULL)
                 {
@@ -107,7 +107,17 @@ static int __command_digest(int argc, char const* argv[], void* context, void (*
                 }
 
                 if (input->type == InputStdin)
+                {
                     fd = STDIN_FILENO;
+
+                    if ((options.bits & HASHOPT_QUIET) == 0)
+                    {
+                        if (options.bits & HASHOPT_PRINT_STDIN)
+                            printf("(\"");
+                        else
+                            printf("(stdin)= ");
+                    }
+                }
                 else
                 {
                     fd = open(input->value, O_RDONLY);
@@ -118,9 +128,11 @@ static int __command_digest(int argc, char const* argv[], void* context, void (*
 
                         fprintf(stderr, "%s: %s\n", input->value, strerror(err));
                         result = EXIT_FAILURE;
-                        free(read_buffer);
                         goto _break_file;
                     }
+
+                    if ((options.bits & (HASHOPT_QUIET | HASHOPT_REVERSE)) == 0)
+                        printf("%s (%s) = ", name, input->value);
                 }
 
                 int rr;
@@ -134,21 +146,31 @@ static int __command_digest(int argc, char const* argv[], void* context, void (*
 
                         fprintf(stderr, "%s: %s\n", input->value, strerror(err));
                         result = EXIT_FAILURE;
-                        free(read_buffer);
                         goto _break_file;
                     }
                     if (rr == 0)
                         break;
+                    if (input->type == InputStdin && (options.bits & (HASHOPT_QUIET | HASHOPT_PRINT_STDIN)) == HASHOPT_PRINT_STDIN)
+                        printf("%.*s", rr - 1, read_buffer);
                     update(context, read_buffer, rr);
                 }
 
 _break_file:
-                if (fd > 0)
+                if (fd > STDIN_FILENO)
                     close(fd);
                 free(read_buffer);
+
+                if (result == EXIT_FAILURE)
+                    continue;
+
                 break;
             }
             case InputString:
+                // no -q
+                // no -r
+                if ((options.bits & (HASHOPT_QUIET | HASHOPT_REVERSE)) == 0)
+                    printf("%s (\"%s\") = ", name, input->value);
+
                 for (char const* s = input->value; *s != '\0'; s += 1)
                     update(context, s, 1);
                 break;
@@ -156,9 +178,28 @@ _break_file:
                 continue;
         }
 
+        if (input->type == InputStdin && (options.bits & (HASHOPT_QUIET | HASHOPT_PRINT_STDIN)) == HASHOPT_PRINT_STDIN)
+            printf("\")= ");
+
         digest(context, hash);
         memtox(hex, hash, out_size);
-        printf("%s\n", hex);
+        printf("%s", hex);
+
+        if ((options.bits & (HASHOPT_QUIET | HASHOPT_REVERSE)) == HASHOPT_REVERSE)
+        {
+            switch (input->type)
+            {
+                case InputFile:
+                    printf(" %s", input->value);
+                    break;
+                case InputString:
+                    printf(" \"%s\"", input->value);
+                    break;
+                default:
+                    break;
+            }
+        }
+        puts("");
     }
 
     free(hash);
@@ -170,14 +211,14 @@ static int __command_md5(int argc, char const* argv[])
 {
     Md5Context ctx;
 
-    return __command_digest(argc, argv, &ctx, md5_init, md5_update, md5_digest, MD5_OUT_SIZE);
+    return __command_digest(argc, argv, "MD5", &ctx, md5_init, md5_update, md5_digest, MD5_OUT_SIZE);
 }
 
 static int __command_sha256(int argc, char const* argv[])
 {
     Sha2Context ctx;
 
-    return __command_digest(argc, argv, &ctx, sha256_init, sha2_update, sha2_digest, SHA256_OUT_SIZE);
+    return __command_digest(argc, argv, "SHA256", &ctx, sha256_init, sha2_update, sha2_digest, SHA256_OUT_SIZE);
 }
 
 static int __command_help(int argc, char const* argv[])
