@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 21:14:17 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/27 22:32:48 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ void md5_digest(Md5Context* context, void* output)
     static uint8_t const _BIT = 0x80;
     static uint8_t const _PADDING[64] = {};
 
-    // TODO check for overflow
     uint64_t original_length = context->length * 8;
 
     md5_update(context, &_BIT, 1);
