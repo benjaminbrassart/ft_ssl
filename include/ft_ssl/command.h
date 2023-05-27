@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   command.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 23:27:07 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/26 23:44:15 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/27 06:59:43 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl/interactive.h"
-#include "ft_ssl/command.h"
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef COMMAND_H
+# define COMMAND_H
 
-int main(int argc, char const* argv[])
-{
-    if (argc == 1)
-        return run_interactive();
+# define FT_SSL_READ_SIZE (1 << 16)
+# define EXIT_FORCE 255
 
-    return execute_command(argv[1], argc - 1, &argv[1]);
-}
+int execute_command(char const* command, int argc, char const** argv);
+
+#endif // COMMAND_H

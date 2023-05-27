@@ -6,19 +6,23 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/25 19:10:49 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/27 23:28:55 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := ft_ssl
 DIR_LIBFT := libft
 NAME_LIBFT := $(DIR_LIBFT)/libft.a
+NAME_LIBFT_SSL := libft_ssl.a
 
 CC := cc
 CFLAGS := -Wall -Werror -Wextra -c -MMD -MP -I. -g3 -Iinclude -I$(DIR_LIBFT)/include
 
-LDLIBS := -lft
-LDFLAGS := -L$(dir $(NAME_LIBFT))
+AR := ar
+ARFLAGS := rs
+
+LDLIBS := -lft_ssl -lft -lreadline
+LDFLAGS := -L. -L$(dir $(NAME_LIBFT))
 
 RM := rm -vf
 MKDIR := mkdir -vp
@@ -32,22 +36,32 @@ SRC += sha1.c
 SRC += sha2.c
 SRC += hash.c
 SRC += hex.c
+SRC += rotate.c
+SRC += interactive.c
+SRC += command.c
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
-$(NAME): $(OBJ) $(NAME_LIBFT)
-	$(CC) $(filter %.o,$^) -o $@ $(LDFLAGS) $(LDLIBS)
+SRC_MAIN := main.c
+OBJ_MAIN := $(SRC_MAIN:%.c=$(DIR_OBJ)/%.o)
+DEP_MAIN := $(OBJ_MAIN:.o=.d)
 
-$(OBJ): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
+$(NAME): $(OBJ_MAIN) $(NAME_LIBFT) $(NAME_LIBFT_SSL)
+	$(CC) $< -o $@ $(LDFLAGS) $(LDLIBS)
+
+$(OBJ) $(OBJ_MAIN): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
 	@$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $< -o $@
 
+$(NAME_LIBFT_SSL): $(OBJ)
+	$(AR) $(ARFLAGS) $@ $?
+
 $(NAME_LIBFT):
-	@$(MAKE) $(MAKEFLAGS) -C $(@D)
+	@$(MAKE) -C $(@D)
 
--include $(DEP)
+-include $(DEP) $(DEP_MAIN)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re unit-test
 
 all: $(NAME)
 
@@ -56,7 +70,10 @@ clean:
 	@$(MAKE) -C $(DIR_LIBFT) clean
 
 fclean: clean
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) $(NAME_LIBFT_SSL)
 	@$(MAKE) -C $(DIR_LIBFT) fclean
 
 re: fclean all
+
+unit-test:
+	@cd tests/unit && sh test.sh

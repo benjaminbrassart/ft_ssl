@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   test_rotate.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 23:27:07 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/25 21:18:34 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/25 22:53:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl/interactive.h"
-#include "ft_ssl/command.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "ft_ssl/rotate.h"
+#include <cassert>
 
-int main(int argc, char const* argv[])
+int main()
 {
-    if (argc == 1)
-        return run_interactive();
+    {
+        auto n = 0x01ULL;
 
-    return execute_command(argv[1], argc - 1, &argv[1]);
+        assert(rotate_left_u64(n, 0) == n);
+        assert(rotate_left_u64(n, 1) == 0x02ULL);
+        assert(rotate_right_u64(n, 0) == n);
+        assert(rotate_right_u64(n, 1) == 0x8000000000000000ULL);
+    }
 }
