@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 23:38:15 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/28 06:21:26 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/28 07:04:06 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct sha256_context
 
 typedef struct sha512_context
 {
-    uint64_t length;
+    __uint128_t length;
     uint64_t hash_vars[8];
     union
     {
