@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 18:13:55 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/28 00:16:09 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/28 02:14:32 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static uint32_t const HASH_VARS[5];
 static void __sha1_step(Sha1Context* context);
 
 static uint32_t const HASH_VARS[5] = {
-    0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0,
+    0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
 };
 
 void sha1_init(Sha1Context* context)
