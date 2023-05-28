@@ -6,12 +6,12 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 23:38:15 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 06:07:27 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/28 07:04:06 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHA2_HPP
-# define SHA2_HPP
+#ifndef SHA2_H
+# define SHA2_H
 
 # include "ft_ssl/cpp.h"
 # include <stddef.h>
@@ -24,99 +24,43 @@ CPP_BEGIN
 # define SHA384_OUT_SIZE (48)
 # define SHA512_OUT_SIZE (64)
 
-typedef enum sha2_algorithm Sha2Algorithm;
-
-typedef struct sha2_context Sha2Context;
-
-typedef struct sha224_data Sha224Data;
-typedef struct sha256_data Sha256Data;
-typedef struct sha384_data Sha384Data;
-typedef struct sha512_data Sha512Data;
-
-enum sha2_algorithm
+typedef struct sha256_context
 {
-    SHA224,
-    SHA256,
-    SHA384,
-    SHA512,
-};
-
-struct sha224_data
-{
-    uint32_t hash_vars[8];
-    union
-    {
-        uint8_t u8[64];
-        uint32_t u32[16];
-    } buffer;
-};
-
-struct sha256_data
-{
-    uint32_t hash_vars[8];
-    union
-    {
-        uint8_t u8[64];
-        uint32_t u32[16];
-    } buffer;
-};
-
-struct sha384_data
-{
-    uint64_t hash_vars[8];
-    union
-    {
-        uint8_t u8[128];
-        uint64_t u64[32];
-    } buffer;
-};
-
-struct sha512_data
-{
-    uint64_t hash_vars[8];
-    union
-    {
-        uint8_t u8[128];
-        uint64_t u64[32];
-    } buffer;
-};
-
-/**
- * An execution context for the SHA-2 algorithm family
- *
- * @param alg the algorithm used for this context
- * @param length the total length of the input
- * @param data algorithm-dependent data, such as the buffer and internal state (hash variables)
- */
-struct sha2_context
-{
-    Sha2Algorithm alg;
     uint64_t length;
+    uint32_t hash_vars[8];
     union
     {
-        Sha224Data sha224;
-        Sha256Data sha256;
-        Sha384Data sha384;
-        Sha512Data sha512;
-    } data;
-    void (*__update)(Sha2Context*, void const*, size_t);
-    void (*__digest)(Sha2Context*, void*);
-};
+        uint8_t u8[64];
+        uint32_t u32[16];
+    } buffer;
+} Sha256Context;
 
-void sha2_init(Sha2Context* context, Sha2Algorithm algorithm);
+typedef struct sha512_context
+{
+    __uint128_t length;
+    uint64_t hash_vars[8];
+    union
+    {
+        uint8_t u8[128];
+        uint64_t u64[16];
+    } buffer;
+} Sha512Context;
 
-void sha2_update(Sha2Context* context, void const* data, size_t len);
+void sha224_init(Sha256Context* context);
+void sha256_init(Sha256Context* context);
+void sha384_init(Sha512Context* context);
+void sha512_init(Sha512Context* context);
 
-void sha2_digest(Sha2Context* context, void* output);
+void sha224_update(Sha256Context* context, void const* data, size_t len);
+void sha256_update(Sha256Context* context, void const* data, size_t len);
+void sha384_update(Sha512Context* context, void const* data, size_t len);
+void sha512_update(Sha512Context* context, void const* data, size_t len);
 
-void sha224_init(Sha2Context* context);
-
-void sha256_init(Sha2Context* context);
-
-void sha384_init(Sha2Context* context);
-
-void sha512_init(Sha2Context* context);
+void sha224_digest(Sha256Context* context, void* output);
+void sha256_digest(Sha256Context* context, void* output);
+void sha384_digest(Sha512Context* context, void* output);
+void sha512_digest(Sha512Context* context, void* output);
 
 CPP_END
 
-#endif // SHA2_HPP
+#endif // SHA2_H

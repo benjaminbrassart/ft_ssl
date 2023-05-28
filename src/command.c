@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 08:01:10 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/28 05:45:58 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,17 @@ static CommandLookup const* __getcommand(char const* name);
 static void __help(void);
 static void __help_help(void);
 static void __help_md5(void);
+static void __help_sha224(void);
 static void __help_sha256(void);
+static void __help_sha384(void);
+static void __help_sha512(void);
 static int __command_help(int argc, char const* argv[]);
 static int __command_exit();
 static int __command_md5(int argc, char const* argv[]);
+static int __command_sha224(int argc, char const* argv[]);
 static int __command_sha256(int argc, char const* argv[]);
+static int __command_sha384(int argc, char const* argv[]);
+static int __command_sha512(int argc, char const* argv[]);
 
 static CommandGroup const COMMAND_GROUPS[] = {
     {"Standard commands", {
@@ -53,7 +59,10 @@ static CommandGroup const COMMAND_GROUPS[] = {
     }},
     {"Message Digest commands", {
         {"md5", __command_md5, __help_md5},
+        {"sha224", __command_sha224, __help_sha224},
         {"sha256", __command_sha256, __help_sha256},
+        {"sha384", __command_sha384, __help_sha384},
+        {"sha512", __command_sha512, __help_sha512},
     }},
     {"Cipher commands", {
     }},
@@ -214,11 +223,32 @@ static int __command_md5(int argc, char const* argv[])
     return __command_digest(argc, argv, "MD5", &ctx, md5_init, md5_update, md5_digest, MD5_OUT_SIZE);
 }
 
+static int __command_sha224(int argc, char const* argv[])
+{
+    Sha256Context ctx;
+
+    return __command_digest(argc, argv, "SHA224", &ctx, sha224_init, sha224_update, sha224_digest, SHA224_OUT_SIZE);
+}
+
 static int __command_sha256(int argc, char const* argv[])
 {
-    Sha2Context ctx;
+    Sha256Context ctx;
 
-    return __command_digest(argc, argv, "SHA256", &ctx, sha256_init, sha2_update, sha2_digest, SHA256_OUT_SIZE);
+    return __command_digest(argc, argv, "SHA256", &ctx, sha256_init, sha256_update, sha256_digest, SHA256_OUT_SIZE);
+}
+
+static int __command_sha384(int argc, char const* argv[])
+{
+    Sha512Context ctx;
+
+    return __command_digest(argc, argv, "SHA384", &ctx, sha384_init, sha384_update, sha384_digest, SHA384_OUT_SIZE);
+}
+
+static int __command_sha512(int argc, char const* argv[])
+{
+    Sha512Context ctx;
+
+    return __command_digest(argc, argv, "SHA512", &ctx, sha512_init, sha512_update, sha512_digest, SHA512_OUT_SIZE);
 }
 
 static int __command_help(int argc, char const* argv[])
@@ -294,9 +324,24 @@ static void __help_md5(void)
     __help_digest("md5");
 }
 
+static void __help_sha224(void)
+{
+    __help_digest("sha224");
+}
+
 static void __help_sha256(void)
 {
     __help_digest("sha256");
+}
+
+static void __help_sha384(void)
+{
+    __help_digest("sha384");
+}
+
+static void __help_sha512(void)
+{
+    __help_digest("sha512");
 }
 
 static void __help_help(void)
