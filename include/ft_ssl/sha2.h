@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 23:38:15 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/28 06:15:25 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/28 06:21:26 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct sha512_context
     {
         uint8_t u8[128];
         uint64_t u64[16];
-    };
+    } buffer;
 } Sha512Context;
 
 void sha224_init(Sha256Context* context);
