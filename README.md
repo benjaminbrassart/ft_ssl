@@ -34,8 +34,8 @@ It is split across 3 sub-projects, each focusing on an aspect of OpenSSL:
         - [x] sha256
     - Bonus:
         - [x] sha224
-        - [ ] sha384
-        - [ ] sha512
+        - [x] sha384
+        - [x] sha512
     - Other:
         - [ ] sha1
         - [ ] sha3-256 (and variants)
