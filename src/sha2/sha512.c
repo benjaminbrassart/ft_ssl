@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 06:16:27 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/28 06:53:42 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/29 00:20:04 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ static void __sha512_step(Sha512Context* context)
         uint64_t sigma0;
         uint64_t sigma1;
 
-        for (int i = 0; i < 64; i += 1)
+        for (int i = 0; i < 80; i += 1)
         {
             uint64_t ch;
             uint64_t maj;

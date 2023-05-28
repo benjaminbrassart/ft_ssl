@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 05:47:57 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/28 07:00:11 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/29 00:11:36 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void sha384_digest(Sha512Context* context, void* output)
 
     __uint128_t original_length = ft_bswap_128(context->length * 8);
 
-    sha512_update(context, &_BIT, 1);
+    sha384_update(context, &_BIT, 1);
 
     size_t len_mod = context->length % 128;
     size_t padding_size;
@@ -52,8 +52,8 @@ void sha384_digest(Sha512Context* context, void* output)
     else
         padding_size = (128 - len_mod) + 112;
 
-    sha512_update(context, _PADDING, padding_size);
-    sha512_update(context, &original_length, sizeof (original_length));
+    sha384_update(context, _PADDING, padding_size);
+    sha384_update(context, &original_length, sizeof (original_length));
 
     hash[A] = ft_bswap_64(context->hash_vars[A]);
     hash[B] = ft_bswap_64(context->hash_vars[B]);
