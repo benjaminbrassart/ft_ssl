@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/28 06:50:43 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/29 05:41:35 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRC += sha2/sha512.c
 SRC += hash.c
 SRC += byteswap.c
 SRC += hex.c
+SRC += base64.c
 SRC += rotate.c
 SRC += interactive.c
 SRC += command.c
