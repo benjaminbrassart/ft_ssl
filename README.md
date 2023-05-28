@@ -30,7 +30,7 @@ It is split across 3 sub-projects, each focusing on an aspect of OpenSSL:
 
 - ft_ssl_md5 **_ongoing_**
     - [x] md5
-    - [ ] sha224
+    - [x] sha224
     - [x] sha256
     - [ ] sha384
     - [ ] sha512
