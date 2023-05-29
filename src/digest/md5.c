@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/28 07:12:41 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/29 09:54:22 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-
-static uint32_t const K[64];
-static uint8_t const S[64];
 
 /**
  * Loop through the internal buffer of a context and update the hash
