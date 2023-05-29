@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/27 23:44:18 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/29 05:48:09 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,8 +32,12 @@ DIR_OBJ := obj
 
 SRC := md5.c
 SRC += sha1.c
-SRC += sha2.c
+SRC += sha2/sha224.c
+SRC += sha2/sha256.c
+SRC += sha2/sha384.c
+SRC += sha2/sha512.c
 SRC += hash.c
+SRC += byteswap.c
 SRC += hex.c
 SRC += rotate.c
 SRC += interactive.c
