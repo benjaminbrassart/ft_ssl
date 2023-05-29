@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 10:14:19 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/29 11:24:37 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/29 11:32:02 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,33 @@ void rmd160_update(Rmd160Context* context, void const* data, size_t len)
     }
 }
 
-void rmd160_digest(Rmd160Context* context, void* output);
+void rmd160_digest(Rmd160Context* context, void* output)
+{
+    static uint8_t const _BIT = 0x80;
+    static uint8_t const _PADDING[64] = {};
+    uint32_t* bytes = (uint32_t*)output;
+
+    uint64_t original_length = context->length * 8;
+
+    rmd160_update(context, &_BIT, 1);
+
+    size_t len_mod = context->length % 64;
+    size_t padding_size;
+
+    if (len_mod <= 56)
+        padding_size = 56 - len_mod;
+    else
+        padding_size = (64 - len_mod) + 56;
+
+    rmd160_update(context, _PADDING, padding_size);
+    rmd160_update(context, &original_length, sizeof (original_length));
+
+    bytes[A] = context->hash_vars[A];
+    bytes[B] = context->hash_vars[B];
+    bytes[C] = context->hash_vars[C];
+    bytes[D] = context->hash_vars[D];
+    bytes[E] = context->hash_vars[E];
+}
 
 static void __rmd160_step(Rmd160Context* context)
 {
