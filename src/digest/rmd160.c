@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 10:14:19 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/29 11:32:02 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/29 15:15:42 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
  * @file This is an implementation of the RIPEMD-160 hashing function.
  *
  * @see https://homes.esat.kuleuven.be/~bosselae/ripemd160/pdf/AB-9601/AB-9601.pdf
+ * @see https://www.oryx-embedded.com/doc/ripemd160_8c_source.html
  */
 
 static void __rmd160_step(Rmd160Context* context);
@@ -107,7 +108,7 @@ void rmd160_digest(Rmd160Context* context, void* output)
     static uint8_t const _PADDING[64] = {};
     uint32_t* bytes = (uint32_t*)output;
 
-    uint64_t original_length = context->length * 8;
+    uint64_t original_length = ft_bswap_64(context->length * 8);
 
     rmd160_update(context, &_BIT, 1);
 
@@ -122,11 +123,11 @@ void rmd160_digest(Rmd160Context* context, void* output)
     rmd160_update(context, _PADDING, padding_size);
     rmd160_update(context, &original_length, sizeof (original_length));
 
-    bytes[A] = context->hash_vars[A];
-    bytes[B] = context->hash_vars[B];
-    bytes[C] = context->hash_vars[C];
-    bytes[D] = context->hash_vars[D];
-    bytes[E] = context->hash_vars[E];
+    bytes[A] = ft_bswap_32(context->hash_vars[A]);
+    bytes[B] = ft_bswap_32(context->hash_vars[B]);
+    bytes[C] = ft_bswap_32(context->hash_vars[C]);
+    bytes[D] = ft_bswap_32(context->hash_vars[D]);
+    bytes[E] = ft_bswap_32(context->hash_vars[E]);
 }
 
 static void __rmd160_step(Rmd160Context* context)
@@ -143,12 +144,18 @@ static void __rmd160_step(Rmd160Context* context)
     vars[D] = pvars[D] = context->hash_vars[D];
     vars[E] = pvars[E] = context->hash_vars[E];
 
+    uint32_t w[80];
+
     for (int i = 0; i < 16; i += 1)
-        context->buffer.u32[i] = ft_bswap_32(context->buffer.u32[i]);
+        w[i] = ft_bswap_32(context->buffer.u32[i]);
+
+    for (int i = 16; i < 80; i += 1)
+        w[i] = rotate_left_u32(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);
 
     for (int i = 0; i < 80; i += 1)
     {
         uint32_t f;
+        uint32_t fp;
         uint32_t k;
         uint32_t kp;
 
@@ -156,28 +163,32 @@ static void __rmd160_step(Rmd160Context* context)
         {
             case 0:
                 f = vars[B] ^ vars[C] ^ vars[D];
+                fp = vars[B] ^ (vars[C] | ~vars[D]);
                 k = 0x00000000;
-                kp = 0x5c4dd124;
+                kp = 0x50a28be6;
                 break;
             case 1:
                 f = (vars[B] & vars[C]) | (~vars[B] & vars[D]);
                 k = 0x5a827999;
-                kp = 0x6d703ef3;
+                kp = 0x5c4dd124;
                 break;
             case 2:
                 f = (vars[B] | ~vars[C]) ^ vars[D];
+                fp = (vars[B] & vars[D]) | (vars[C] & ~vars[D]);
                 k = 0x6ed9eba1;
-                kp = 0x7a6d76e9;
+                kp = 0x6d703ef3;
                 break;
             case 3:
                 f = (vars[B] & vars[D]) | (vars[C] & ~vars[D]);
+                fp = (vars[B] | ~vars[C]) ^ vars[D];
                 k = 0x8f1bbcdc;
-                kp = 0x00000000;
+                kp = 0x7a6d76e9;
                 break;
             case 4:
                 f = vars[B] ^ (vars[C] | ~vars[D]);
+                fp = vars[B] ^ vars[C] ^ vars[D];
                 k = 0xa953fd4e;
-                kp = 0x50a28be6;
+                kp = 0x00000000;
                 break;
         }
 
@@ -194,7 +205,7 @@ static void __rmd160_step(Rmd160Context* context)
 
         // parallel
         {
-            uint32_t temp = rotate_left_u32(pvars[A] + f + context->buffer.u32[RP[i]] + kp, SP[i]) + pvars[E];
+            uint32_t temp = rotate_left_u32(pvars[A] + fp + context->buffer.u32[RP[i]] + kp, SP[i]) + pvars[E];
 
             pvars[A] = pvars[E];
             pvars[E] = pvars[D];
