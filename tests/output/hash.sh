@@ -2,12 +2,16 @@
 
 set -e
 
+rcut() {
+    rev | cut "$@" | rev
+}
+
 hash_real() {
-    printf -- '%s' "$2" | "$1"sum | cut -d ' ' -f 1
+    printf -- '%s' "$2" | openssl "$1" | rcut -d ' ' -f 1
 }
 
 hash_ft() {
-    ./ft_ssl "$1" -q -s "$2"
+    printf -- '%s' "$2" | ./ft_ssl "$1" | rcut -d ' ' -f 1
 }
 
 output_real="$(mktemp)"
@@ -22,4 +26,4 @@ else
     printf -- '\nKO! Check diff:\n  < is your output\n  > is the expected output\n'
 fi
 
-rm "${output_real}" "${output_ft}"
+rm -f "${output_real}" "${output_ft}"
