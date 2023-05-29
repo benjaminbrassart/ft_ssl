@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/29 10:02:31 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/29 11:25:58 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ DIR_OBJ := obj
 SRC += byteswap.c
 SRC += rotate.c
 SRC += digest/md5.c
+SRC += digest/rmd160.c
 SRC += digest/sha224.c
 SRC += digest/sha256.c
 SRC += digest/sha384.c
