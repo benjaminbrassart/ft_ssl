@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/30 06:16:47 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/30 07:18:16 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ static int __command_digest(int argc, char const* argv[], char const* name, void
                     if ((options.bits & HASHOPT_QUIET) == 0)
                     {
                         if (options.bits & HASHOPT_PRINT_STDIN)
-                            write(STDOUT_FILENO, "(\"", 2);
+                            ft_printf("%s (\"", name);
                         else
                             write(STDOUT_FILENO, "(stdin)= ", 9);
                     }
@@ -159,8 +159,8 @@ static int __command_digest(int argc, char const* argv[], char const* name, void
                     }
                     if (rr == 0)
                         break;
-                    if (input->type == InputStdin && (options.bits & (HASHOPT_QUIET | HASHOPT_PRINT_STDIN)) == HASHOPT_PRINT_STDIN)
-                        write(STDOUT_FILENO, read_buffer, rr - 1);
+                    if (input->type == InputStdin && (options.bits & HASHOPT_PRINT_STDIN) != 0)
+                        write(STDOUT_FILENO, read_buffer, rr - (options.bits & HASHOPT_QUIET) ? 1 : 0);
                     update(context, read_buffer, rr);
                 }
 
