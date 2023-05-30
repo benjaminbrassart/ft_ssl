@@ -2,10 +2,11 @@
   "configurations": [
     {
       "name": "Linux",
-      "includePath": ["${workspaceFolder}/include"],
+      "includePath": ["${workspaceFolder}/include", "${workspaceFolder}/libft/include"],
       "defines": [],
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "c99",
+      "cppStandard": "c++20",
       "intelliSenseMode": "linux-gcc-x64"
     }
   ],

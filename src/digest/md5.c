@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 15:51:47 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:33:44 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/29 09:54:22 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,12 @@
  */
 
 #include "ft_ssl/md5.h"
+#include "ft_ssl/digest.h"
+#include "ft_ssl/rotate.h"
+#include "libft/ft.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-
-#define A 0
-#define B 1
-#define C 2
-#define D 3
-
-static uint32_t const K[64];
-static uint8_t const S[64];
-static uint32_t const HASH_VARS[4];
 
 /**
  * Loop through the internal buffer of a context and update the hash
@@ -37,11 +31,6 @@ static uint32_t const HASH_VARS[4];
  * @param context the context to update
  */
 static void __md5_step(Md5Context* context);
-
-/**
- * Rotate a 32-bits word by n bits to the left
- */
-static inline uint32_t __rotate_left(uint32_t word, uint32_t n);
 
 static uint32_t const K[64] = {
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -63,20 +52,19 @@ static uint32_t const K[64] = {
 };
 
 static uint8_t const S[64] = {
-    7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-    5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-    4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-    6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,
-};
-
-static uint32_t const HASH_VARS[4] = {
-    0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
+    7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+    5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+    4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+    6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
 };
 
 void md5_init(Md5Context* context)
 {
-    memcpy(context->hash_vars, HASH_VARS, sizeof (HASH_VARS));
     context->length = 0;
+    context->hash_vars[A] = 0x67452301;
+    context->hash_vars[B] = 0xefcdab89;
+    context->hash_vars[C] = 0x98badcfe;
+    context->hash_vars[D] = 0x10325476;
 }
 
 void md5_update(Md5Context* context, void const* data, size_t len)
@@ -105,8 +93,8 @@ void md5_digest(Md5Context* context, void* output)
 {
     static uint8_t const _BIT = 0x80;
     static uint8_t const _PADDING[64] = {};
+    uint32_t* bytes = (uint32_t*)output;
 
-    // TODO check for overflow
     uint64_t original_length = context->length * 8;
 
     md5_update(context, &_BIT, 1);
@@ -121,19 +109,18 @@ void md5_digest(Md5Context* context, void* output)
 
     md5_update(context, _PADDING, padding_size);
     md5_update(context, &original_length, sizeof (original_length));
-    memcpy(output, context->hash_vars, sizeof (context->hash_vars));
-}
 
-static inline uint32_t __rotate_left(uint32_t word, uint32_t n)
-{
-    return (word << n) | (word >> (32 - n));
+    bytes[A] = context->hash_vars[A];
+    bytes[B] = context->hash_vars[B];
+    bytes[C] = context->hash_vars[C];
+    bytes[D] = context->hash_vars[D];
 }
 
 static void __md5_step(Md5Context* context)
 {
     uint32_t vars[4];
 
-    memcpy(vars, context->hash_vars, sizeof (vars));
+    ft_memcpy(vars, context->hash_vars, sizeof (vars));
 
     for (uint32_t i = 0; i < 64; i += 1)
     {
@@ -164,9 +151,11 @@ static void __md5_step(Md5Context* context)
         vars[A] = vars[D];
         vars[D] = vars[C];
         vars[C] = vars[B];
-        vars[B] = vars[B] + __rotate_left(f, S[i]);
+        vars[B] = vars[B] + rotate_left_u32(f, S[i]);
     }
 
-    for (int i = 0; i < 4; i += 1)
-        context->hash_vars[i] += vars[i];
+    context->hash_vars[A] += vars[A];
+    context->hash_vars[B] += vars[B];
+    context->hash_vars[C] += vars[C];
+    context->hash_vars[D] += vars[D];
 }

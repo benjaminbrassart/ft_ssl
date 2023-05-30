@@ -1,24 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   rotate.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 04:49:20 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/25 21:09:08 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/25 21:18:54 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl/interactive.h"
-#include "ft_ssl/command.h"
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef ROTATE_H
+# define ROTATE_H
 
-int main(int argc, char const* argv[])
-{
-    if (argc == 1)
-        return run_interactive();
+# include "ft_ssl/cpp.h"
+# include <stdint.h>
 
-    return execute_command(argv[1], argc - 1, &argv[1]);
-}
+CPP_BEGIN
+
+uint32_t rotate_left_u32(uint32_t n, uint32_t r);
+uint32_t rotate_right_u32(uint32_t n, uint32_t r);
+
+uint64_t rotate_left_u64(uint64_t n, uint64_t r);
+uint64_t rotate_right_u64(uint64_t n, uint64_t r);
+
+CPP_END
+
+#endif // ROTATE_H

@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hex.c                                              :+:      :+:    :+:   */
+/*   rotate.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/24 01:10:12 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/25 01:14:51 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/25 21:11:12 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/25 21:15:36 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl/hex.h"
-#include <stddef.h>
+#include "ft_ssl/rotate.h"
 #include <stdint.h>
 
-static char const BASE_HEX[16] = "0123456789abcdef";
-
-char* memtox(char* dst, void const* src, size_t n)
+uint32_t rotate_left_u32(uint32_t n, uint32_t r)
 {
-    uint8_t const* bytes = (uint8_t const*)src;
+    return (n << r) | (n >> (32 - r));
+}
 
-    for (size_t i = 0; i < n; i += 1)
-    {
-        dst[i * 2] = BASE_HEX[(bytes[i] >> 4) & 0xF];
-        dst[i * 2 + 1] = BASE_HEX[(bytes[i]) & 0xF];
-    }
-    dst[n * 2] = '\0';
-    return dst;
+uint32_t rotate_right_u32(uint32_t n, uint32_t r)
+{
+    return (n >> r) | (n << (32 - r));
+}
+
+uint64_t rotate_left_u64(uint64_t n, uint64_t r)
+{
+    return (n << r) | (n >> (64 - r));
+}
+uint64_t rotate_right_u64(uint64_t n, uint64_t r)
+{
+    return (n >> r) | (n << (64 - r));
 }

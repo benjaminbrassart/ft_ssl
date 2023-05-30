@@ -6,13 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 23:23:16 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/24 03:32:26 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/30 06:21:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl/hash.h"
+#include "libft/ft.h"
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -29,7 +29,7 @@ int hash_options_parse(HashOptions* options, int argc, char const* argv[])
     {
         int err = errno;
 
-        fprintf(stderr, "ft_ssl: %s (%d)\n", strerror(err), err);
+        ft_dprintf(STDERR_FILENO, "ft_ssl: %s (%d)\n", strerror(err), err);
         goto _error;
     }
 
@@ -45,25 +45,25 @@ int hash_options_parse(HashOptions* options, int argc, char const* argv[])
         switch (argv[i][1])
         {
             case 'p':
-                options->bits &= HASHOPT_PRINT_STDIN;
+                options->bits |= HASHOPT_PRINT_STDIN;
                 break;
             case 'q':
-                options->bits &= HASHOPT_QUIET;
+                options->bits |= HASHOPT_QUIET;
                 break;
             case 'r':
-                options->bits &= HASHOPT_REVERSE;
+                options->bits |= HASHOPT_REVERSE;
                 break;
             case 's':
                 i += 1;
                 if (i >= argc)
                 {
-                    fprintf(stderr, "ft_ssl: options requires an argument -- 's'\n");
+                    write(STDERR_FILENO, "ft_ssl: options requires an argument -- 's'\n", 44);
                     goto _error;
                 }
                 __add_input(options, InputString, argv[i]);
                 break;
             default:
-                fprintf(stderr, "ft_ssl: unknown option -- '%c'\n", argv[i][1]);
+                ft_dprintf(STDERR_FILENO, "ft_ssl: unknown option -- '%c'\n", argv[i][1]);
                 goto _error;
         }
     }

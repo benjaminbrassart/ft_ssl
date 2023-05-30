@@ -1,3 +1,4 @@
 /obj/
 /*.out
 /ft_ssl
+/libft_ssl.a

@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   digest.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/23 22:35:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 04:49:20 by bbrassar         ###   ########.fr       */
+/*   Created: 2023/05/28 05:58:53 by bbrassar          #+#    #+#             */
+/*   Updated: 2023/05/28 05:59:16 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl/interactive.h"
-#include "ft_ssl/command.h"
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef DIGEST_H
+# define DIGEST_H
 
-int main(int argc, char const* argv[])
-{
-    if (argc == 1)
-        return run_interactive();
+# define A 0
+# define B 1
+# define C 2
+# define D 3
+# define E 4
+# define F 5
+# define G 6
+# define H 7
 
-    return execute_command(argv[1], argc - 1, &argv[1]);
-}
+#endif // DIGEST_H

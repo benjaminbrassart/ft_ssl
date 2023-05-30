@@ -29,11 +29,22 @@ It is split across 3 sub-projects, each focusing on an aspect of OpenSSL:
 ## Milestones
 
 - ft_ssl_md5 **_ongoing_**
-    - ~~md5~~ **DONE**
-    - sha224
-    - sha256
-    - sha384
-    - sha512
+    - Mandatory:
+        - [x] md5
+        - [x] sha256
+    - Bonus:
+        - [x] sha224
+        - [x] sha384
+        - [x] sha512
+    - Other:
+        - [ ] sha1
+        - [ ] sha3-256 (and variants)
+        - [ ] rmd160 (and variants)
+        - [ ] gost
+        - [ ] sm3
+        - [ ] shake128 (and shake256)
+        - [ ] tiger
+
 - ft_ssl_des ***maybe later***
 - ft_ssl_rsa ***maybe later***
 
@@ -44,3 +55,9 @@ git clone --recursive https://github.com/benjaminbrassart/ft_ssl.git ft_ssl
 cd ft_ssl
 make
 ```
+
+## Tools
+
+- [sha256algorithm.com](https://sha256algorithm.com/) &mdash; Step-by-step SHA256 visualizer
+- [rapidtables.com](https://www.rapidtables.com/) &mdash; Base conversions ([bin2dec](https://www.rapidtables.com/convert/number/binary-to-decimal.html), [dec2bin](https://www.rapidtables.com/convert/number/decimal-to-binary.html))
+- [Little to big endian converter](https://blockchain-academy.hs-mittweida.de/litte-big-endian-converter/)
