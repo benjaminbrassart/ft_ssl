@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/23 16:27:42 by bbrassar          #+#    #+#              #
-#    Updated: 2023/05/29 05:41:35 by bbrassar         ###   ########.fr        #
+#    Updated: 2023/05/30 09:40:43 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,27 +30,24 @@ MKDIR := mkdir -vp
 DIR_SRC := src
 DIR_OBJ := obj
 
-SRC := md5.c
-SRC += sha2/sha224.c
-SRC += sha2/sha256.c
-SRC += sha2/sha384.c
-SRC += sha2/sha512.c
-SRC += hash.c
 SRC += byteswap.c
-SRC += hex.c
 SRC += base64.c
 SRC += rotate.c
-SRC += interactive.c
-SRC += command.c
+SRC += digest/md5.c
+SRC += digest/sha224.c
+SRC += digest/sha256.c
+SRC += digest/sha384.c
+SRC += digest/sha512.c
+
 OBJ := $(SRC:%.c=$(DIR_OBJ)/%.o)
 DEP := $(OBJ:.o=.d)
 
-SRC_MAIN := main.c
+SRC_MAIN := main.c interactive.c command.c hex.c hash.c
 OBJ_MAIN := $(SRC_MAIN:%.c=$(DIR_OBJ)/%.o)
 DEP_MAIN := $(OBJ_MAIN:.o=.d)
 
 $(NAME): $(OBJ_MAIN) $(NAME_LIBFT) $(NAME_LIBFT_SSL)
-	$(CC) $< -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) $(filter %.o,$^) -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(OBJ) $(OBJ_MAIN): $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c
 	@$(MKDIR) $(@D)
