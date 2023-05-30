@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:44:30 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/30 07:18:16 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/30 09:33:57 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include "libft/ft.h"
 #include <errno.h>
 #include <fcntl.h>
-// #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
