@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:27:34 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/27 07:01:14 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/05/30 06:20:25 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,9 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <readline/history.h>
 #include <readline/readline.h>
-
-typedef struct string_node StringNode;
-
-struct string_node
-{
-    char* str;
-    StringNode* next;
-};
-
-typedef struct string_list
-{
-    StringNode* begin;
-    StringNode* end;
-    size_t size;
-} StringList;
 
 static char** __split_input(char const* line);
 
@@ -69,7 +55,7 @@ int run_interactive(void)
             return EXIT_SUCCESS;
 
         if (result != EXIT_SUCCESS)
-            fprintf(stderr, "error in %s\n", args[0]);
+            ft_dprintf(STDERR_FILENO, "error in %s\n", args[0]);
     }
 }
 
@@ -105,7 +91,7 @@ static char** __split_input(char const* line)
                 input_len += 1;
             if (s[input_len] == '\0')
             {
-                fprintf(stderr, "Error: failed to parse input: quote not closed at index %ld\n", (s - line) + 1);
+                ft_dprintf(STDERR_FILENO, "Error: failed to parse input: quote not closed at index %d\n", (int)(s - line) + 1);
                 goto _error;
             }
             s += 1;
@@ -180,7 +166,7 @@ _malloc_error:
     {
         int err = errno;
 
-        fprintf(stderr, "Error: %s (%d)\n", strerror(err), err);
+        ft_dprintf(STDERR_FILENO, "Error: %s (%d)\n", strerror(err), err);
     }
 
 _error:
