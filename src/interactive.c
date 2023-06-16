@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 23:27:34 by bbrassar          #+#    #+#             */
-/*   Updated: 2023/05/30 06:20:25 by bbrassar         ###   ########.fr       */
+/*   Updated: 2023/06/16 04:13:33 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "libft/ft.h"
 #include <errno.h>
 #include <stdbool.h>
+#include <stdio.h> // fun fact, readline needs you to include this
 #include <stdlib.h>
 #include <unistd.h>
 #include <readline/history.h>
