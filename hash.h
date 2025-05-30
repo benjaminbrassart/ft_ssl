@@ -6,11 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:41:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 19:34:03 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 22:31:05 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include "args.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -27,3 +29,13 @@ struct hash_algorithm {
 	size_t digest_size;
 	size_t context_size;
 };
+
+int command_md5(struct arg_iterator *it);
+
+int command_sha224(struct arg_iterator *it);
+
+int command_sha256(struct arg_iterator *it);
+
+int command_sha384(struct arg_iterator *it);
+
+int command_sha512(struct arg_iterator *it);
