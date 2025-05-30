@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:47:38 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 12:13:49 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:22:39 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,20 @@ void sha512_init(struct sha512_context *ctx)
 	ctx->f = 0x9b05688c2b3e6c1f;
 	ctx->g = 0x1f83d9abfb41bd6b;
 	ctx->h = 0x5be0cd19137e2179;
+	ctx->length[0] = 0;
+	ctx->length[1] = 0;
+}
+
+void sha384_init(struct sha512_context *ctx)
+{
+	ctx->a = 0xcbbb9d5dc1059ed8;
+	ctx->b = 0x629a292a367cd507;
+	ctx->c = 0x9159015a3070dd17;
+	ctx->d = 0x152fecd8f70e5939;
+	ctx->e = 0x67332667ffc00b31;
+	ctx->f = 0x8eb44a8768581511;
+	ctx->g = 0xdb0c2e0d64f98fa7;
+	ctx->h = 0x47b5481dbefa4fa4;
 	ctx->length[0] = 0;
 	ctx->length[1] = 0;
 }
@@ -189,6 +203,26 @@ void sha512_digest(struct sha512_context *ctx,
 					ctx->e, ctx->f, ctx->g, ctx->h };
 
 	for (int i = 0; i < 8; i += 1) {
+		digest[i * 8 + 0] = (registers[i] >> 56) & 0xff;
+		digest[i * 8 + 1] = (registers[i] >> 48) & 0xff;
+		digest[i * 8 + 2] = (registers[i] >> 40) & 0xff;
+		digest[i * 8 + 3] = (registers[i] >> 32) & 0xff;
+		digest[i * 8 + 4] = (registers[i] >> 24) & 0xff;
+		digest[i * 8 + 5] = (registers[i] >> 16) & 0xff;
+		digest[i * 8 + 6] = (registers[i] >> 8) & 0xff;
+		digest[i * 8 + 7] = (registers[i] >> 0) & 0xff;
+	}
+}
+
+void sha384_digest(struct sha512_context *ctx,
+		   uint8_t digest[SHA384_DIGEST_SIZE])
+{
+	sha512_predigest(ctx);
+
+	uint64_t const registers[6] = { ctx->a, ctx->b, ctx->c,
+					ctx->d, ctx->e, ctx->f };
+
+	for (int i = 0; i < 6; i += 1) {
 		digest[i * 8 + 0] = (registers[i] >> 56) & 0xff;
 		digest[i * 8 + 1] = (registers[i] >> 48) & 0xff;
 		digest[i * 8 + 2] = (registers[i] >> 40) & 0xff;
