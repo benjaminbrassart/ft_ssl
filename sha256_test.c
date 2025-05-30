@@ -6,12 +6,12 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:05:28 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:38:29 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:39:23 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "sha2.h"
 #include "sha256.c"
-#include "sha256.h"
 
 #include <stdint.h>
 #include <stdio.h>

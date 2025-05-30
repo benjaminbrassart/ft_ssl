@@ -6,11 +6,11 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:09:18 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:36:17 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:39:19 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sha256.h"
+#include "sha2.h"
 
 static inline uint32_t rrot32(uint32_t n, int r)
 {
