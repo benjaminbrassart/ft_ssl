@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:05:28 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:08:47 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:38:29 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,39 +35,39 @@ static struct sha256_test const TESTS[] = {
 	{
 		.input = "1",
 		.digest =
-			"4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
+			"6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
 	},
 	{
 		.input = "0000000000000000", // 16
 		.digest =
-			"af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+			"fcdb4b423f4e5283afa249d762ef6aef150e91fccd810d43e5e719d14512dec7",
 	},
 	{
 		.input = "00000000000000000000000000000000", // 32
 		.digest =
-			"374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb",
+			"84e0c0eafaa95a34c293f278ac52e45ce537bab5e752a00e6959a13ae103b65a",
 	},
 	{
 		.input =
 			"000000000000000000000000000000000000000000000000", // 48
 		.digest =
-			"9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+			"f9a2ba511957122bfa67b029061c679703494540b35f02e0e0496a3b0cdcc46a",
 	},
 	{
 		.input =
 			"0000000000000000000000000000000000000000000000000000000000000000", // 64
 		.digest =
-			"66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925",
+			"60e05bd1b195af2f94112fa7197a5c88289058840ce7c6df9693756bc6250f55",
 	},
 	{
 		.input = "The quick brown fox jumps over the lazy dog",
 		.digest =
-			"730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525",
+			"d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 	},
 	{
 		.input = "The quick brown fox jumps over the lazy dog.",
 		.digest =
-			"619cba8e8e05826e9b8c519c0a5c68f4fb653e8a3d8aa04bb2c8cd4c",
+			"ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c",
 	},
 };
 
