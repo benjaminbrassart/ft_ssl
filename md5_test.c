@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 09:47:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 10:59:05 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:03:06 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,28 @@ static struct md5_test const TESTS[] = {
 	{
 		.input = "",
 		.digest = "d41d8cd98f00b204e9800998ecf8427e",
+	},
+	{
+		.input = "1",
+		.digest = "c4ca4238a0b923820dcc509a6f75849b",
+	},
+	{
+		.input = "0000000000000000", // 16
+		.digest = "1e4a1b03d1b6cd8a174a826f76e009f4",
+	},
+	{
+		.input = "00000000000000000000000000000000", // 32
+		.digest = "cd9e459ea708a948d5c2f5a6ca8838cf",
+	},
+	{
+		.input =
+			"000000000000000000000000000000000000000000000000", // 48
+		.digest = "b505acf9fc996902b0c547a2abfc62b2",
+	},
+	{
+		.input =
+			"0000000000000000000000000000000000000000000000000000000000000000", // 64
+		.digest = "10eab6008d5642cf42abd2aa41f847cb",
 	},
 	{
 		.input = "The quick brown fox jumps over the lazy dog",
