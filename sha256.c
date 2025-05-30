@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:09:18 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:39:19 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:44:23 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,19 @@ void sha256_init(struct sha256_context *ctx)
 	ctx->f = 0x9b05688c;
 	ctx->g = 0x1f83d9ab;
 	ctx->h = 0x5be0cd19;
+	ctx->length = 0;
+}
+
+void sha224_init(struct sha256_context *ctx)
+{
+	ctx->a = 0xc1059ed8;
+	ctx->b = 0x367cd507;
+	ctx->c = 0x3070dd17;
+	ctx->d = 0xf70e5939;
+	ctx->e = 0xffc00b31;
+	ctx->f = 0x68581511;
+	ctx->g = 0x64f98fa7;
+	ctx->h = 0xbefa4fa4;
 	ctx->length = 0;
 }
 
@@ -129,8 +142,7 @@ void sha256_update(struct sha256_context *ctx, void const *data, size_t len)
 	}
 }
 
-void sha256_digest(struct sha256_context *ctx,
-		   uint8_t digest[SHA256_DIGEST_SIZE])
+static void sha256_predigest(struct sha256_context *ctx)
 {
 	uint8_t original_length[8];
 
@@ -150,11 +162,33 @@ void sha256_digest(struct sha256_context *ctx,
 	}
 
 	sha256_update(ctx, original_length, 8);
+}
+
+void sha256_digest(struct sha256_context *ctx,
+		   uint8_t digest[SHA256_DIGEST_SIZE])
+{
+	sha256_predigest(ctx);
 
 	uint32_t const registers[8] = { ctx->a, ctx->b, ctx->c, ctx->d,
 					ctx->e, ctx->f, ctx->g, ctx->h };
 
 	for (int i = 0; i < 8; i += 1) {
+		digest[i * 4 + 0] = (registers[i] >> 24) & 0xff;
+		digest[i * 4 + 1] = (registers[i] >> 16) & 0xff;
+		digest[i * 4 + 2] = (registers[i] >> 8) & 0xff;
+		digest[i * 4 + 3] = (registers[i] >> 0) & 0xff;
+	}
+}
+
+void sha224_digest(struct sha256_context *ctx,
+		   uint8_t digest[SHA224_DIGEST_SIZE])
+{
+	sha256_predigest(ctx);
+
+	uint32_t const registers[7] = { ctx->a, ctx->b, ctx->c, ctx->d,
+					ctx->e, ctx->f, ctx->g };
+
+	for (int i = 0; i < 7; i += 1) {
 		digest[i * 4 + 0] = (registers[i] >> 24) & 0xff;
 		digest[i * 4 + 1] = (registers[i] >> 16) & 0xff;
 		digest[i * 4 + 2] = (registers[i] >> 8) & 0xff;
