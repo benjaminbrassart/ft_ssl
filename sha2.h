@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:05:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:46:40 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:48:49 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ struct sha256_context {
 	uint64_t length;
 };
 
+void sha224_init(struct sha256_context *ctx);
+
+void sha224_digest(struct sha256_context *ctx,
+		   uint8_t digest[SHA224_DIGEST_SIZE]);
+
 void sha256_init(struct sha256_context *ctx);
 
 void sha256_update(struct sha256_context *ctx, void const *data, size_t len);
 
 void sha256_digest(struct sha256_context *ctx,
 		   uint8_t digest[SHA256_DIGEST_SIZE]);
-
-void sha224_init(struct sha256_context *ctx);
-
-void sha224_digest(struct sha256_context *ctx,
-		   uint8_t digest[SHA224_DIGEST_SIZE]);
