@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:41:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 12:56:10 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 19:34:03 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ typedef void(hash_update_t)(void *ctx, void const *data, size_t len);
 typedef void(hash_digest_t)(void *ctx, uint8_t *digest);
 
 struct hash_algorithm {
-	char const *name_slug;
 	char const *name_pretty;
 	hash_init_t *init;
 	hash_update_t *update;

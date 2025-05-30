@@ -6,14 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:09:18 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 18:44:46 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 19:34:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sha2.h"
 
 struct hash_algorithm const ALGORITHM_SHA224 = {
-	.name_slug = "sha224",
 	.name_pretty = "SHA224",
 	.init = (hash_init_t *)sha224_init,
 	.update = (hash_update_t *)sha256_update,
@@ -23,7 +22,6 @@ struct hash_algorithm const ALGORITHM_SHA224 = {
 };
 
 struct hash_algorithm const ALGORITHM_SHA256 = {
-	.name_slug = "sha256",
 	.name_pretty = "SHA256",
 	.init = (hash_init_t *)sha256_init,
 	.update = (hash_update_t *)sha256_update,
