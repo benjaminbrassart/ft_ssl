@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:05:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:48:49 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:50:00 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,3 +37,19 @@ void sha256_update(struct sha256_context *ctx, void const *data, size_t len);
 
 void sha256_digest(struct sha256_context *ctx,
 		   uint8_t digest[SHA256_DIGEST_SIZE]);
+
+#define SHA512_BLOCK_SIZE 128
+#define SHA512_DIGEST_SIZE 64
+
+struct sha512_context {
+	uint64_t a, b, c, d, e, f, g, h;
+	uint8_t buffer[SHA512_BLOCK_SIZE];
+	uint64_t length[2];
+};
+
+void sha512_init(struct sha512_context *ctx);
+
+void sha512_update(struct sha512_context *ctx, void const *data, size_t len);
+
+void sha512_digest(struct sha512_context *ctx,
+		   uint8_t digest[SHA512_DIGEST_SIZE]);
