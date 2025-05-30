@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 09:30:36 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 09:32:33 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 09:38:00 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define MD5_BLOCK_SIZE 32
+#define MD5_BLOCK_SIZE 64
 #define MD5_DIGEST_SIZE 16
 
 struct md5_context {
