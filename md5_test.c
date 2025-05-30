@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 09:47:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:03:06 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:05:06 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,17 +93,6 @@ static int test_md5(struct md5_test const *test)
 
 int main(void)
 {
-	// do {
-	// 	size_t rc = fread(buffer, 1, BUFFER_SIZE, stdin);
-
-	// 	md5_update(&ctx, buffer, rc);
-	// } while (!ferror(f) && !feof(f));
-
-	// if (ferror(f)) {
-	// 	fprintf(stderr, "error: %m\n");
-	// 	return EXIT_FAILURE;
-	// }
-
 	int ok = 0;
 	int ko = 0;
 
