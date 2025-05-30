@@ -6,11 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:05:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 12:23:40 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 18:43:26 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include "hash.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -19,6 +21,11 @@
 
 #define SHA256_BLOCK_SIZE 64
 #define SHA256_DIGEST_SIZE 32
+
+extern struct hash_algorithm const ALGORITHM_SHA224;
+extern struct hash_algorithm const ALGORITHM_SHA256;
+extern struct hash_algorithm const ALGORITHM_SHA384;
+extern struct hash_algorithm const ALGORITHM_SHA512;
 
 struct sha256_context {
 	uint32_t a, b, c, d, e, f, g, h;

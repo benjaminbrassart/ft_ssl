@@ -6,11 +6,31 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:47:38 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 12:22:39 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 18:45:37 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sha2.h"
+
+struct hash_algorithm const ALGORITHM_SHA384 = {
+	.name_slug = "sha512",
+	.name_pretty = "SHA512",
+	.init = (hash_init_t *)sha384_init,
+	.update = (hash_update_t *)sha512_update,
+	.digest = (hash_digest_t *)sha384_digest,
+	.digest_size = SHA384_DIGEST_SIZE,
+	.context_size = sizeof(struct sha512_context),
+};
+
+struct hash_algorithm const ALGORITHM_SHA512 = {
+	.name_slug = "sha512",
+	.name_pretty = "SHA512",
+	.init = (hash_init_t *)sha512_init,
+	.update = (hash_update_t *)sha512_update,
+	.digest = (hash_digest_t *)sha512_digest,
+	.digest_size = SHA512_DIGEST_SIZE,
+	.context_size = sizeof(struct sha512_context),
+};
 
 static inline uint64_t rrot64(uint64_t n, int r)
 {

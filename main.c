@@ -6,13 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:38:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 18:41:13 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 18:46:42 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "args.h"
 #include "hash.h"
 #include "md5.h"
+#include "sha2.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -385,8 +386,30 @@ static int command_md5(struct arg_iterator *it)
 	return command_hash_generic(it, &ALGORITHM_MD5);
 }
 
+static int command_sha224(struct arg_iterator *it)
+{
+	return command_hash_generic(it, &ALGORITHM_SHA224);
+}
+
+static int command_sha256(struct arg_iterator *it)
+{
+	return command_hash_generic(it, &ALGORITHM_SHA256);
+}
+
+static int command_sha384(struct arg_iterator *it)
+{
+	return command_hash_generic(it, &ALGORITHM_SHA384);
+}
+
+static int command_sha512(struct arg_iterator *it)
+{
+	return command_hash_generic(it, &ALGORITHM_SHA512);
+}
+
 static struct command const HASH_COMMANDS[] = {
-	{ "md5", command_md5 },
+	{ "md5", command_md5 },	      { "sha224", command_sha224 },
+	{ "sha256", command_sha256 }, { "sha384", command_sha384 },
+	{ "sha512", command_sha512 },
 };
 
 static int run_interactive(void)
