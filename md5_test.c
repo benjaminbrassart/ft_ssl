@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 09:47:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 11:05:06 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:27:14 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFFER_SIZE 64
 #define sizeof_array(Arr) (sizeof(Arr) / sizeof((Arr)[0]))
 
 struct md5_test {

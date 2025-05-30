@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:18:23 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 12:19:49 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:27:14 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFFER_SIZE 64
 #define sizeof_array(Arr) (sizeof(Arr) / sizeof((Arr)[0]))
 
 struct sha384_test {
