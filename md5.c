@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 09:30:23 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 10:43:48 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:20:23 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void md5_init(struct md5_context *ctx)
 	ctx->length = 0;
 }
 
-static void md5_step(struct md5_context *ctx)
+static void md5_compress(struct md5_context *ctx)
 {
 	uint32_t a = ctx->a;
 	uint32_t b = ctx->b;
@@ -107,7 +107,7 @@ static void md5_push_byte(struct md5_context *ctx, uint8_t byte)
 	ctx->buffer[ctx->length % MD5_BLOCK_SIZE] = byte;
 	ctx->length += 1;
 	if (ctx->length % MD5_BLOCK_SIZE == 0) {
-		md5_step(ctx);
+		md5_compress(ctx);
 	}
 }
 
