@@ -3,3 +3,4 @@
 *.exe
 *.so
 *.a
+/ft_ssl
