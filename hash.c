@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 13:06:20 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 13:53:39 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <fcntl.h>
+#include <unistd.h>
 
 enum hash_input_type {
 	HASH_FILE,
@@ -127,7 +130,7 @@ static int prepend_input(struct hash_input_list *list,
 }
 
 static int command_hash_run_file(struct hash_command *cmd,
-				 struct hash_options const *opts, FILE *stream,
+				 struct hash_options const *opts, int fd,
 				 char const *name)
 {
 	struct hash_algorithm const *alg = cmd->algorithm;
@@ -135,38 +138,39 @@ static int command_hash_run_file(struct hash_command *cmd,
 	uint8_t *digest = cmd->digest;
 	uint8_t rbuf[64];
 
-	if (!opts->quiet && opts->echo && stream == stdin) {
+	if (!opts->quiet && opts->echo && fd == STDIN_FILENO) {
 		printf("(\"");
 	}
 
 	alg->init(ctx);
-	while (!feof(stream) && !ferror(stream)) {
-		size_t rc = fread(rbuf, 1, sizeof(rbuf), stream);
+	for (;;) {
+		ssize_t rc = read(fd, rbuf, sizeof(rbuf));
 
 		if (rc == 0) {
 			break;
 		}
 
+		if (rc < 0) {
+			// TODO print message, read failed
+			return EXIT_FAILURE;
+		}
+
 		// TODO chomp the terminating EOL
-		if (opts->echo && stream == stdin) {
+		if (opts->echo && fd == STDIN_FILENO) {
 			printf("%.*s", (int)rc, rbuf);
 		}
 
-		alg->update(ctx, rbuf, rc);
+		alg->update(ctx, rbuf, (size_t)rc);
 	}
 
-	if (ferror(stream)) {
-		return EXIT_FAILURE;
-	}
-
-	if (!opts->quiet && opts->echo && stream == stdin) {
+	if (!opts->quiet && opts->echo && fd == STDIN_FILENO) {
 		printf("\")= ");
 	}
 
 	alg->digest(ctx, digest);
 
 	if (!opts->quiet && !opts->reverse) {
-		if (stream == stdin) {
+		if (fd == STDIN_FILENO) {
 			if (!opts->echo) {
 				printf("(stdin)= ");
 			}
@@ -179,7 +183,7 @@ static int command_hash_run_file(struct hash_command *cmd,
 		printf("%02x", cmd->digest[i]);
 	}
 
-	if (stream != stdin && opts->reverse && !opts->quiet) {
+	if (fd != STDIN_FILENO && opts->reverse && !opts->quiet) {
 		printf(" %s", name);
 	}
 
@@ -223,19 +227,20 @@ static int command_hash_run_input(struct hash_command *cmd,
 	switch (input->type) {
 	case HASH_FILE: {
 		int res;
-		FILE *file = fopen(input->value, "r");
+		int fd = open(input->value, O_RDONLY | O_ASYNC);
 
-		if (file == NULL) {
+		if (fd == -1) {
 			return EXIT_FAILURE;
 		}
 
-		res = command_hash_run_file(cmd, opts, file, input->value);
-		fclose(file);
+		res = command_hash_run_file(cmd, opts, fd, input->value);
+		close(fd);
 		return res;
 	}
 
 	case HASH_STDIN:
-		return command_hash_run_file(cmd, opts, stdin, "<stdin>");
+		return command_hash_run_file(cmd, opts, STDIN_FILENO,
+					     "<stdin>");
 
 	case HASH_STRING:
 		return command_hash_run_string(cmd, opts, input->value);
