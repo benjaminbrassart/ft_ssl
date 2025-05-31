@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:17:17 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:23:04 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,8 @@ static int command_hash_run_file(struct hash_command *cmd,
 		// ignore \r and \n for printing
 		while (i < (size_t)rc) {
 			if (rbuf[i] == '\n' || rbuf[i] == '\r') {
-				memmove(&rbuf[i], &rbuf[i + 1], (size_t)rc - i);
+				ft_memmove(&rbuf[i], &rbuf[i + 1],
+					   (size_t)rc - i);
 				rc -= 1;
 			} else {
 				i += 1;
