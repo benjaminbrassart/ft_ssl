@@ -104,6 +104,8 @@ class Test:
             with open(f"{tmp}/stderr", "wb") as f:
                 f.write(stderr)
 
+            eprint(f"test {self.id} stdout diff: check {tmp}/stdout.diff")
+
         # shutil.rmtree(tmp, ignore_errors=True)
 
 
