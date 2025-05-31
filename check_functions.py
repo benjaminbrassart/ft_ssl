@@ -12,21 +12,13 @@ if __name__ == "__main__":
     assert len(args) == 1
 
     p = subprocess.run(
-        args=["nm", "-u", "--", args[0]],
-        env={"LC_ALL": "C"},
+        args=["nm", "-u", "-f", "just-symbols", "--", args[0]],
+        env={"LANG": "C"},
         capture_output=True,
         text=True,
     )
     p.check_returncode()
 
-    regex = re.compile(r"^\s+U ([^_]\w*)(?:@.+)?$")
+    symbols = [symbol.partition("@")[0] for symbol in p.stdout.splitlines() if not symbol.startswith("_")]
 
-    symbols = [
-        sym.group(1)
-        for sym in [regex.match(line) for line in p.stdout.splitlines()]
-        if sym is not None
-    ]
-
-    for symbol in symbols:
-        if symbol not in allowed_functions:
-            print(symbol)
+    print("\n".join([symbol for symbol in symbols if symbol not in allowed_functions]))
