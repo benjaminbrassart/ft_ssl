@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:13:22 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:17:17 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "args.h"
 #include "md5.h"
 #include "sha2.h"
+
+#include "libft/ft.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -216,7 +218,7 @@ static int command_hash_run_string(struct hash_command *cmd,
 	uint8_t *digest = cmd->digest;
 
 	alg->init(ctx);
-	alg->update(ctx, str, strlen(str));
+	alg->update(ctx, str, ft_strlen(str));
 	alg->digest(ctx, digest);
 
 	if (!opts->quiet && !opts->reverse) {
@@ -291,11 +293,9 @@ static int command_hash_parse_opts(struct arg_iterator *it,
 	opts->echo = 0;
 	opts->quiet = 0;
 	opts->reverse = 0;
-	opts->inputs = (struct hash_input_list){
-		.begin = NULL,
-		.end = NULL,
-		.size = 0,
-	};
+	opts->inputs.begin = NULL;
+	opts->inputs.end = NULL;
+	opts->inputs.size = 0;
 
 	while (result == EXIT_SUCCESS && (arg = argit_peek(it)) != NULL) {
 		if (strcmp(arg, "-p") == 0) {
