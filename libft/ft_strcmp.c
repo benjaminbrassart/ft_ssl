@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft.h                                               :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/31 14:15:02 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:32:20 by bbrassar         ###   ########.fr       */
+/*   Created: 2025/05/31 14:30:58 by bbrassar          #+#    #+#             */
+/*   Updated: 2025/05/31 14:33:16 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "ft.h"
 
-#include <stddef.h>
+int ft_strcmp(char const s1[], char const s2[])
+{
+	size_t i = 0;
 
-int ft_strcmp(char const s1[], char const s2[]);
+	while (s1[i] != '\0' && s1[i] == s2[i]) {
+		i += 1;
+	}
 
-size_t ft_strlen(char const str[]);
-
-void *ft_memmove(void *dst, void const *src, size_t len);
+	return s1[i] - s2[i];
+}

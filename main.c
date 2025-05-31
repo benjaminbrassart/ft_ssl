@@ -6,12 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:38:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 22:48:25 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:32:30 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "args.h"
 #include "hash.h"
+
+#include "libft/ft.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -55,7 +57,7 @@ static struct command const *get_command(char const command_name[])
 		for (size_t j = 0; j < group->command_count; j += 1) {
 			struct command const *command = &group->commands[j];
 
-			if (strcmp(command->name, command_name) == 0) {
+			if (ft_strcmp(command->name, command_name) == 0) {
 				return command;
 			}
 		}

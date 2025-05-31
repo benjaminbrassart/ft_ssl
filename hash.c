@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:23:04 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:32:19 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,13 +299,13 @@ static int command_hash_parse_opts(struct arg_iterator *it,
 	opts->inputs.size = 0;
 
 	while (result == EXIT_SUCCESS && (arg = argit_peek(it)) != NULL) {
-		if (strcmp(arg, "-p") == 0) {
+		if (ft_strcmp(arg, "-p") == 0) {
 			opts->echo = 1;
-		} else if (strcmp(arg, "-q") == 0) {
+		} else if (ft_strcmp(arg, "-q") == 0) {
 			opts->quiet = 1;
-		} else if (strcmp(arg, "-r") == 0) {
+		} else if (ft_strcmp(arg, "-r") == 0) {
 			opts->reverse = 1;
-		} else if (strcmp(arg, "-s") == 0) {
+		} else if (ft_strcmp(arg, "-s") == 0) {
 			argit_advance(it);
 
 			char const *str = argit_peek(it);
