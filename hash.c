@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:47:08 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 15:55:24 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include "libft/ft.h"
 
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,8 +61,58 @@ struct hash_command {
 	struct hash_algorithm const *algorithm;
 	void *context;
 	uint8_t *digest;
-	char *digest_str;
 };
+
+static void *verbose_malloc(size_t n)
+{
+	void *r = malloc(n);
+
+	if (r == NULL) {
+		char const *emsg = strerror(errno);
+
+		write(STDERR_FILENO,
+		      "ft_ssl: error: failed to allocate memory: ", 42);
+		write(STDERR_FILENO, emsg, ft_strlen(emsg));
+		write(STDERR_FILENO, "\n", 1);
+	}
+
+	return r;
+}
+
+static int verbose_open(char const file_name[], int flags)
+{
+	int fd = open(file_name, flags);
+
+	if (fd < 0) {
+		char const *emsg = strerror(errno);
+
+		write(STDERR_FILENO, "ft_ssl: error: failed to open ", 30);
+		write(STDERR_FILENO, file_name, strlen(file_name));
+		write(STDERR_FILENO, ": ", 2);
+		write(STDERR_FILENO, emsg, ft_strlen(emsg));
+		write(STDERR_FILENO, "\n", 1);
+	}
+
+	return fd;
+}
+
+static ssize_t verbose_read(int fd, void *buffer, size_t len,
+			    char const file_name[])
+{
+	ssize_t rc = read(fd, buffer, len);
+
+	if (rc < 0) {
+		char const *emsg = strerror(errno);
+
+		write(STDERR_FILENO, "ft_ssl: error: failed to read from ", 35);
+		write(STDERR_FILENO, file_name, strlen(file_name));
+		write(STDERR_FILENO, ": ", 2);
+		write(STDERR_FILENO, emsg, ft_strlen(emsg));
+		write(STDERR_FILENO, "\n", 1);
+	}
+
+	return rc;
+}
 
 static char const BASE_HEX[] = "0123456789abcdef";
 
@@ -86,9 +137,8 @@ static int append_input(struct hash_input_list *list, enum hash_input_type type,
 {
 	struct hash_input *input;
 
-	input = malloc(sizeof(*input));
+	input = verbose_malloc(sizeof(*input));
 	if (input == NULL) {
-		// TODO print message, malloc failed
 		return EXIT_FAILURE;
 	}
 
@@ -113,9 +163,8 @@ static int prepend_input(struct hash_input_list *list,
 {
 	struct hash_input *input;
 
-	input = malloc(sizeof(*input));
+	input = verbose_malloc(sizeof(*input));
 	if (input == NULL) {
-		// TODO print message, malloc failed
 		return EXIT_FAILURE;
 	}
 
@@ -160,14 +209,13 @@ static int command_hash_run_file(struct hash_command *cmd,
 
 	alg->init(ctx);
 	for (;;) {
-		ssize_t rc = read(fd, rbuf, sizeof(rbuf));
+		ssize_t rc = verbose_read(fd, rbuf, sizeof(rbuf), name);
 
 		if (rc == 0) {
 			break;
 		}
 
 		if (rc < 0) {
-			// TODO print message, read failed
 			return EXIT_FAILURE;
 		}
 
@@ -265,9 +313,9 @@ static int command_hash_run_input(struct hash_command *cmd,
 	switch (input->type) {
 	case HASH_FILE: {
 		int res;
-		int fd = open(input->value, O_RDONLY | O_ASYNC);
+		int fd = verbose_open(input->value, O_RDONLY | O_ASYNC);
 
-		if (fd == -1) {
+		if (fd < 0) {
 			return EXIT_FAILURE;
 		}
 
@@ -331,8 +379,9 @@ static int command_hash_parse_opts(struct arg_iterator *it,
 			char const *str = argit_peek(it);
 
 			if (str == NULL) {
-				// TODO print message, missing argument
-				// after -s
+				write(STDERR_FILENO,
+				      "ft_ssl: error: option -s needs an argument\n",
+				      43);
 				result = EXIT_FAILURE;
 				break;
 			}
@@ -372,7 +421,6 @@ static int command_hash_generic(struct arg_iterator *it,
 {
 	void *context = NULL;
 	uint8_t *digest = NULL;
-	char *digest_str = NULL;
 	struct hash_options opts;
 	int result;
 
@@ -383,18 +431,13 @@ static int command_hash_generic(struct arg_iterator *it,
 
 	result = EXIT_FAILURE;
 	do {
-		context = malloc(algorithm->context_size);
+		context = verbose_malloc(algorithm->context_size);
 		if (context == NULL) {
 			break;
 		}
 
-		digest = malloc(algorithm->digest_size);
+		digest = verbose_malloc(algorithm->digest_size);
 		if (digest == NULL) {
-			break;
-		}
-
-		digest_str = malloc(algorithm->digest_size * 2 + 1);
-		if (digest_str == NULL) {
 			break;
 		}
 
@@ -402,13 +445,11 @@ static int command_hash_generic(struct arg_iterator *it,
 			.algorithm = algorithm,
 			.context = context,
 			.digest = digest,
-			.digest_str = digest_str,
 		};
 
 		result = command_hash_run_cmd(&cmd, &opts);
 	} while (0);
 
-	free(digest_str);
 	free(digest);
 	free(context);
 	free_inputs(&opts.inputs);
