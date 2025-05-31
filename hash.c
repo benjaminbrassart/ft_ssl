@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:32:19 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:47:08 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ struct hash_command {
 	uint8_t *digest;
 	char *digest_str;
 };
+
+static char const BASE_HEX[] = "0123456789abcdef";
 
 static void free_inputs(struct hash_input_list *list)
 {
@@ -131,6 +133,18 @@ static int prepend_input(struct hash_input_list *list,
 	return EXIT_SUCCESS;
 }
 
+static void write_digest(int fd, uint8_t const *digest, size_t len)
+{
+	char buf[2];
+
+	for (size_t i = 0; i < len; i += 1) {
+		buf[0] = BASE_HEX[(digest[i] >> 4) & 0xf];
+		buf[1] = BASE_HEX[(digest[i] >> 0) & 0xf];
+
+		write(fd, buf, 2);
+	}
+}
+
 static int command_hash_run_file(struct hash_command *cmd,
 				 struct hash_options const *opts, int fd,
 				 char const *name)
@@ -141,7 +155,7 @@ static int command_hash_run_file(struct hash_command *cmd,
 	uint8_t rbuf[64];
 
 	if (!opts->quiet && opts->echo && fd == STDIN_FILENO) {
-		printf("(\"");
+		write(STDOUT_FILENO, "(\"", 2);
 	}
 
 	alg->init(ctx);
@@ -173,15 +187,15 @@ static int command_hash_run_file(struct hash_command *cmd,
 		}
 
 		if (opts->echo && fd == STDIN_FILENO) {
-			printf("%.*s", (int)rc, rbuf);
+			write(STDOUT_FILENO, rbuf, (size_t)rc);
 		}
 	}
 
 	if (opts->echo && fd == STDIN_FILENO) {
 		if (opts->quiet) {
-			printf("\n");
+			write(STDOUT_FILENO, "\n", 1);
 		} else {
-			printf("\")= ");
+			write(STDOUT_FILENO, "\")= ", 4);
 		}
 	}
 
@@ -190,23 +204,25 @@ static int command_hash_run_file(struct hash_command *cmd,
 	if (!opts->quiet && !opts->reverse) {
 		if (fd == STDIN_FILENO) {
 			if (!opts->echo) {
-				printf("(stdin)= ");
+				write(STDOUT_FILENO, "(stdin)= ", 9);
 			}
 		} else {
-			printf("%s (%s) = ", alg->name_pretty, name);
+			write(STDOUT_FILENO, alg->name_pretty,
+			      ft_strlen(alg->name_pretty));
+			write(STDOUT_FILENO, " (", 2);
+			write(STDOUT_FILENO, name, ft_strlen(name));
+			write(STDOUT_FILENO, ") = ", 4);
 		}
 	}
 
-	for (size_t i = 0; i < alg->digest_size; i += 1) {
-		printf("%02x", cmd->digest[i]);
-	}
+	write_digest(STDOUT_FILENO, cmd->digest, alg->digest_size);
 
 	if (fd != STDIN_FILENO && opts->reverse && !opts->quiet) {
-		printf(" %s", name);
+		write(STDOUT_FILENO, " ", 1);
+		write(STDOUT_FILENO, name, ft_strlen(name));
 	}
 
-	printf("\n");
-
+	write(STDOUT_FILENO, "\n", 1);
 	return EXIT_SUCCESS;
 }
 
@@ -223,18 +239,22 @@ static int command_hash_run_string(struct hash_command *cmd,
 	alg->digest(ctx, digest);
 
 	if (!opts->quiet && !opts->reverse) {
-		printf("%s (\"%s\") = ", alg->name_pretty, str);
+		write(STDOUT_FILENO, alg->name_pretty,
+		      ft_strlen(alg->name_pretty));
+		write(STDOUT_FILENO, " (\"", 3);
+		write(STDOUT_FILENO, str, ft_strlen(str));
+		write(STDOUT_FILENO, "\") = ", 5);
 	}
 
-	for (size_t i = 0; i < alg->digest_size; i += 1) {
-		printf("%02x", cmd->digest[i]);
-	}
+	write_digest(STDOUT_FILENO, cmd->digest, alg->digest_size);
 
 	if (!opts->quiet && opts->reverse) {
-		printf(" \"%s\"", str);
+		write(STDOUT_FILENO, " \"", 2);
+		write(STDOUT_FILENO, str, ft_strlen(str));
+		write(STDOUT_FILENO, "\"", 1);
 	}
 
-	printf("\n");
+	write(STDOUT_FILENO, "\n", 1);
 	return EXIT_SUCCESS;
 }
 

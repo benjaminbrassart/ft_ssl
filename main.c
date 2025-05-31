@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:38:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:32:30 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:45:41 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <unistd.h>
 
 #define sizeof_array(Arr) (sizeof(Arr) / sizeof((Arr)[0]))
 
@@ -71,14 +73,20 @@ static void print_usage(void)
 	for (size_t i = 0; i < sizeof_array(COMMAND_GROUPS); i += 1) {
 		struct command_group const *group = &COMMAND_GROUPS[i];
 
-		printf("%s commands:\n", group->name);
+		write(STDOUT_FILENO, group->name, ft_strlen(group->name));
+		write(STDOUT_FILENO, " commands:\n", 11);
+
 		for (size_t j = 0; j < group->command_count; j += 1) {
 			struct command const *command = &group->commands[j];
 
-			printf("  %s\n", command->name);
+			write(STDOUT_FILENO, "  ", 2);
+			write(STDOUT_FILENO, command->name,
+			      ft_strlen(command->name));
 		}
-		printf("\n");
-		printf("  Flags: %s\n", group->flags);
+
+		write(STDOUT_FILENO, "\n  Flags: ", 10);
+		write(STDOUT_FILENO, group->flags, ft_strlen(group->flags));
+		write(STDOUT_FILENO, "\n", 1);
 	}
 }
 
@@ -106,8 +114,10 @@ int main(int argc, char const *argv[])
 		return command->executor(&it);
 	}
 
-	fprintf(stderr, "ft_ssl: error: '%s' is an invalid command.\n\n",
-		command_name);
+	write(STDERR_FILENO, "ft_ssl: error: '", 16);
+	write(STDERR_FILENO, command_name, ft_strlen(command_name));
+	write(STDERR_FILENO, "' is an invalid command.\n\n", 26);
 	print_usage();
+
 	return EXIT_FAILURE;
 }
