@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:38:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 14:45:41 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 15:59:49 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static struct command const *get_command(char const command_name[])
 	return NULL;
 }
 
-static void print_usage(void)
+static void print_available_commands(void)
 {
 	for (size_t i = 0; i < sizeof_array(COMMAND_GROUPS); i += 1) {
 		struct command_group const *group = &COMMAND_GROUPS[i];
@@ -90,9 +90,17 @@ static void print_usage(void)
 	}
 }
 
-static int run_interactive(void)
+static void print_usage(void)
 {
-	return EXIT_SUCCESS;
+	write(STDERR_FILENO, "Usage: ft_ssl [command] [flags] [file/string]\n",
+	      46);
+}
+
+static void print_invalid_command(char const command_name[])
+{
+	write(STDERR_FILENO, "ft_ssl: error: '", 16);
+	write(STDERR_FILENO, command_name, ft_strlen(command_name));
+	write(STDERR_FILENO, "' is an invalid command.\n", 26);
 }
 
 int main(int argc, char const *argv[])
@@ -105,7 +113,8 @@ int main(int argc, char const *argv[])
 	char const *command_name = argit_next(&it);
 
 	if (command_name == NULL) {
-		return run_interactive();
+		print_usage();
+		return EXIT_FAILURE;
 	}
 
 	struct command const *command = get_command(command_name);
@@ -114,10 +123,9 @@ int main(int argc, char const *argv[])
 		return command->executor(&it);
 	}
 
-	write(STDERR_FILENO, "ft_ssl: error: '", 16);
-	write(STDERR_FILENO, command_name, ft_strlen(command_name));
-	write(STDERR_FILENO, "' is an invalid command.\n\n", 26);
-	print_usage();
+	print_invalid_command(command_name);
+	write(STDERR_FILENO, "\n", 1);
+	print_available_commands();
 
 	return EXIT_FAILURE;
 }
