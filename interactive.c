@@ -6,13 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 16:43:41 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 20:02:48 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 20:18:20 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "interactive.h"
 #include "args.h"
 
+#include "command.h"
 #include "libft/ft.h"
 
 #include <stddef.h>
@@ -22,6 +23,10 @@
 #include <unistd.h>
 
 #include <editline/readline.h>
+
+struct interactive {
+	unsigned running : 1;
+};
 
 struct splitter {
 	char const *line;
@@ -58,8 +63,6 @@ static unsigned is_word_char(char c)
 {
 	return !(is_quote_char(c) || c == ' ');
 }
-
-#define ERR(Fmt, ...) (fprintf(stderr, "ERROR: " Fmt "\n", ##__VA_ARGS__))
 
 static int splitter_next_word(struct splitter *sp, struct word *w)
 {
@@ -183,27 +186,62 @@ static char const **split_line(char const line[])
 	return ptrs;
 }
 
-static void process_line(char const line[])
+static void print_invalid_command(char const command_name[])
 {
-	char const **argv = split_line(line);
+	write(STDERR_FILENO, "ft_ssl: error: '", 16);
+	write(STDERR_FILENO, command_name, ft_strlen(command_name));
+	write(STDERR_FILENO,
+	      "' is an invalid command. Type 'help' to see available commands.\n",
+	      64);
+}
 
-	if (argv == NULL) {
-		return;
-	}
-
+static unsigned process_args(char const *argv[])
+{
 	int argc = 0;
 
 	while (argv[argc] != NULL) {
 		argc += 1;
 	}
 
-	if (argc > 0) {
-		struct arg_iterator it;
+	struct arg_iterator it;
 
-		argit_init(&it, argc, argv);
+	argit_init(&it, argc, argv);
+
+	char const *command_name = argit_next(&it);
+
+	if (command_name != NULL) {
+		if (ft_strcmp(command_name, "exit") == 0) {
+			return 0;
+		} else if (ft_strcmp(command_name, "help") == 0) {
+			print_available_commands();
+		} else {
+			struct command const *cmd = get_command(command_name);
+
+			if (cmd == NULL) {
+				print_invalid_command(command_name);
+				return 1;
+			}
+
+			cmd->executor(&it);
+		}
 	}
 
+	return 1;
+}
+
+static unsigned process_line(char const line[])
+{
+	char const **argv = split_line(line);
+
+	if (argv == NULL) {
+		return 1;
+	}
+
+	unsigned ret = process_args(argv);
+
 	free(argv);
+
+	return ret;
 }
 
 int run_interactive(void)
@@ -211,9 +249,12 @@ int run_interactive(void)
 	char *line;
 
 	while ((line = readline("ft_ssl> ")) != NULL) {
-		process_line(line);
+		unsigned running = process_line(line);
 		add_history(line);
 		free(line);
+		if (!running) {
+			break;
+		}
 	}
 
 	return EXIT_SUCCESS;
