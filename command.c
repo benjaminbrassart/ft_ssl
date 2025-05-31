@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 18:03:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 18:06:58 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 20:18:49 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static struct command const HASH_COMMANDS[] = {
 
 static struct command_group const COMMAND_GROUPS[] = {
 	{
-		.name = "Hash",
+		.name = "Message Digest",
 		.flags = "-p -q -r -s",
 		.commands = HASH_COMMANDS,
 		.command_count = sizeof_array(HASH_COMMANDS),
