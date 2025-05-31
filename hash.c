@@ -6,14 +6,16 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 22:32:41 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 13:06:20 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hash.h"
+#include "args.h"
 #include "md5.h"
 #include "sha2.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -327,9 +329,9 @@ static int command_hash_parse_opts(struct arg_iterator *it,
 static int command_hash_generic(struct arg_iterator *it,
 				struct hash_algorithm const *algorithm)
 {
-	void *context;
-	uint8_t *digest;
-	char *digest_str;
+	void *context = NULL;
+	uint8_t *digest = NULL;
+	char *digest_str = NULL;
 	struct hash_options opts;
 	int result;
 
