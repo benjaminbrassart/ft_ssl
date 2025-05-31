@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 13:53:39 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/05/31 14:13:22 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,16 +155,31 @@ static int command_hash_run_file(struct hash_command *cmd,
 			return EXIT_FAILURE;
 		}
 
-		// TODO chomp the terminating EOL
+		alg->update(ctx, rbuf, (size_t)rc);
+
+		size_t i = 0;
+
+		// ignore \r and \n for printing
+		while (i < (size_t)rc) {
+			if (rbuf[i] == '\n' || rbuf[i] == '\r') {
+				memmove(&rbuf[i], &rbuf[i + 1], (size_t)rc - i);
+				rc -= 1;
+			} else {
+				i += 1;
+			}
+		}
+
 		if (opts->echo && fd == STDIN_FILENO) {
 			printf("%.*s", (int)rc, rbuf);
 		}
-
-		alg->update(ctx, rbuf, (size_t)rc);
 	}
 
-	if (!opts->quiet && opts->echo && fd == STDIN_FILENO) {
-		printf("\")= ");
+	if (opts->echo && fd == STDIN_FILENO) {
+		if (opts->quiet) {
+			printf("\n");
+		} else {
+			printf("\")= ");
+		}
 	}
 
 	alg->digest(ctx, digest);
