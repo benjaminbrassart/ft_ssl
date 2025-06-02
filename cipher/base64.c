@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 12:46:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 19:31:11 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 19:33:44 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void base64_dec_init(struct base64_decoder *dec, void *ctx,
 int base64_dec_update(struct base64_decoder *dec, char const data[], size_t len)
 {
 	for (size_t i = 0; i < len; i += 1) {
-		if (data[i] == '\n') {
+		if (data[i] == '\n' || data[i] == '\r' || data[i] == ' ') {
 			continue;
 		}
 
