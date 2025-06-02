@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 12:28:05 by bbrassar          #+#    #+#              #
-#    Updated: 2025/06/02 12:23:05 by bbrassar         ###   ########.fr        #
+#    Updated: 2025/06/02 12:31:27 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ override MAKEFILE := $(lastword $(MAKEFILE_LIST))
 
 NAME := ft_ssl
 
-override SRC := main.c interactive.c args.c command.c hash.c \
+override SRC := main.c interactive.c args.c command.c hash.c verbose.c \
 	md5.c sha256.c sha512.c \
 	libft/ft_strcmp.c libft/ft_strlen.c libft/ft_memmove.c
 override OBJ := $(SRC:%.c=%.c.o)

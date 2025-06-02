@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 15:55:24 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:28:23 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "args.h"
 #include "md5.h"
 #include "sha2.h"
+#include "verbose.h"
 
 #include "libft/ft.h"
 
@@ -62,57 +63,6 @@ struct hash_command {
 	void *context;
 	uint8_t *digest;
 };
-
-static void *verbose_malloc(size_t n)
-{
-	void *r = malloc(n);
-
-	if (r == NULL) {
-		char const *emsg = strerror(errno);
-
-		write(STDERR_FILENO,
-		      "ft_ssl: error: failed to allocate memory: ", 42);
-		write(STDERR_FILENO, emsg, ft_strlen(emsg));
-		write(STDERR_FILENO, "\n", 1);
-	}
-
-	return r;
-}
-
-static int verbose_open(char const file_name[], int flags)
-{
-	int fd = open(file_name, flags);
-
-	if (fd < 0) {
-		char const *emsg = strerror(errno);
-
-		write(STDERR_FILENO, "ft_ssl: error: failed to open ", 30);
-		write(STDERR_FILENO, file_name, strlen(file_name));
-		write(STDERR_FILENO, ": ", 2);
-		write(STDERR_FILENO, emsg, ft_strlen(emsg));
-		write(STDERR_FILENO, "\n", 1);
-	}
-
-	return fd;
-}
-
-static ssize_t verbose_read(int fd, void *buffer, size_t len,
-			    char const file_name[])
-{
-	ssize_t rc = read(fd, buffer, len);
-
-	if (rc < 0) {
-		char const *emsg = strerror(errno);
-
-		write(STDERR_FILENO, "ft_ssl: error: failed to read from ", 35);
-		write(STDERR_FILENO, file_name, strlen(file_name));
-		write(STDERR_FILENO, ": ", 2);
-		write(STDERR_FILENO, emsg, ft_strlen(emsg));
-		write(STDERR_FILENO, "\n", 1);
-	}
-
-	return rc;
-}
 
 static char const BASE_HEX[] = "0123456789abcdef";
 
