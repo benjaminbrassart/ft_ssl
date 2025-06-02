@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 12:46:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 14:57:45 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:26:12 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,69 @@ static int decode_full_block(char const in[4], uint8_t out[3])
 	out[2] = (sextets[2] << 6) | sextets[3];
 
 	return EXIT_SUCCESS;
+}
+
+void base64_enc_init(struct base64_encoder *enc, void *ctx,
+		     base64_encode_yield *yield_block)
+{
+	enc->ctx = ctx;
+	enc->yield_block = yield_block;
+	enc->length = 0;
+}
+
+int base64_enc_update(struct base64_encoder *enc, void const *data, size_t len)
+{
+	uint8_t const *bytes = data;
+
+	for (size_t i = 0; i < len; i += 1) {
+		enc->buffer[enc->length] = bytes[i];
+		enc->length += 1;
+		if (enc->length % 3 == 0) {
+			char out[4];
+
+			encode_full_block(enc->buffer, out);
+			enc->length = 0;
+
+			int res = enc->yield_block(enc->ctx, out);
+
+			if (res != EXIT_SUCCESS) {
+				return res;
+			}
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int base64_enc_finalize(struct base64_encoder *enc, unsigned pad)
+{
+	if (enc->length == 0) {
+		return enc->yield_block(enc->ctx, "\0\0\0\0");
+	}
+
+	char pad_char = pad ? '=' : '\0';
+	char out[4] = { pad_char, pad_char, pad_char, pad_char };
+	uint8_t index[4] = { 0xff, 0xff, 0xff, 0xff };
+
+	index[0] = (enc->buffer[0] >> 2);
+	index[1] = ((enc->buffer[0] & 0x03) << 4);
+
+	if (enc->length > 1) {
+		index[1] |= (enc->buffer[1] >> 4);
+		index[2] = ((enc->buffer[1] & 0x0f) << 2);
+	}
+
+	if (enc->length > 2) {
+		index[2] |= (enc->buffer[2] >> 6);
+		index[3] = (enc->buffer[2] & 0x3f);
+	}
+
+	for (int i = 0; i < 4; i += 1) {
+		if (index[i] == 0xff) {
+			break;
+		}
+		out[i] = BASE64[index[i]];
+	}
+
+	return enc->yield_block(enc->ctx, out);
 }
