@@ -6,14 +6,14 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 22:29:21 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 12:28:23 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:41:27 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "hash.h"
+#include "hash/hash.h"
 #include "args.h"
-#include "md5.h"
-#include "sha2.h"
+#include "hash/md5.h"
+#include "hash/sha2.h"
 #include "verbose.h"
 
 #include "libft/ft.h"

@@ -6,12 +6,12 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 18:03:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 20:18:49 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:39:16 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "command.h"
-#include "hash.h"
+#include "hash/hash.h"
 
 #include "libft/ft.h"
 

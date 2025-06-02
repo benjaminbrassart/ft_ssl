@@ -6,13 +6,13 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:05:58 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 18:43:26 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:40:43 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "hash.h"
+#include "hash/hash.h"
 
 #include <stddef.h>
 #include <stdint.h>

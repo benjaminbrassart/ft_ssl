@@ -6,11 +6,11 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 09:30:23 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 19:34:05 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:41:18 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "md5.h"
+#include "hash/md5.h"
 
 struct hash_algorithm const ALGORITHM_MD5 = {
 	.name_pretty = "MD5",

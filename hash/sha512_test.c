@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sha256_test.c                                      :+:      :+:    :+:   */
+/*   sha512_test.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/30 11:05:28 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 12:27:14 by bbrassar         ###   ########.fr       */
+/*   Created: 2025/05/30 11:50:26 by bbrassar          #+#    #+#             */
+/*   Updated: 2025/06/02 12:41:14 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sha2.h"
-#include "sha256.c"
+#include "hash/sha2.h"
+#include "hash/sha512.c"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -20,68 +20,68 @@
 
 #define sizeof_array(Arr) (sizeof(Arr) / sizeof((Arr)[0]))
 
-struct sha256_test {
+struct sha384_test {
 	char const *input;
-	char const digest[SHA256_DIGEST_SIZE * 2 + 1];
+	char const digest[SHA512_DIGEST_SIZE * 2 + 1];
 };
 
-static struct sha256_test const TESTS[] = {
+static struct sha384_test const TESTS[] = {
 	{
 		.input = "",
 		.digest =
-			"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+			"cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
 	},
 	{
 		.input = "1",
 		.digest =
-			"6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+			"4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a",
 	},
 	{
 		.input = "0000000000000000", // 16
 		.digest =
-			"fcdb4b423f4e5283afa249d762ef6aef150e91fccd810d43e5e719d14512dec7",
+			"56d01c4d1a698e26ac99eefdd77b9e98f1b909b407282830e8dffc18fb99f2159a44a1059f08c53e9bba17bc7695f35c720a207643dc8a11f7f93e470936b0f3",
 	},
 	{
 		.input = "00000000000000000000000000000000", // 32
 		.digest =
-			"84e0c0eafaa95a34c293f278ac52e45ce537bab5e752a00e6959a13ae103b65a",
+			"98b6d128682e280b74b324ca82a6bae6e8a3f7174e0605bfd52eb9948fad8984854ec08f7652f32055c4a9f12b69add4850481d9503a7f2225501671d6124648",
 	},
 	{
 		.input =
 			"000000000000000000000000000000000000000000000000", // 48
 		.digest =
-			"f9a2ba511957122bfa67b029061c679703494540b35f02e0e0496a3b0cdcc46a",
+			"816b8e1d3305328634a836fe91e6ac125b4a641ef3d1c000ce513a27982fa9b8fc548f79da25adf5ab557c9041b410315c6515d2a9be2fe1720635fdf52c8968",
 	},
 	{
 		.input =
 			"0000000000000000000000000000000000000000000000000000000000000000", // 64
 		.digest =
-			"60e05bd1b195af2f94112fa7197a5c88289058840ce7c6df9693756bc6250f55",
+			"8f6beb3c0792f50c176800332f4468f76b4457b41d2f68e294cb46e53addbf5769a59eddf33e19394e8ab78e374b1bd33a680d26464fcd1174da226af9c8cd6e",
 	},
 	{
 		.input = "The quick brown fox jumps over the lazy dog",
 		.digest =
-			"d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
+			"07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6",
 	},
 	{
 		.input = "The quick brown fox jumps over the lazy dog.",
 		.digest =
-			"ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c",
+			"91ea1245f20d46ae9a037a989f54f1f790f0a47607eeb8a14d12890cea77a1bbc6c7ed9cf205e67b7f2b8fd4c7dfd3a7a8617e45f3c463d481c7e586c39ac1ed",
 	},
 };
 
-static int test_sha256(struct sha256_test const *test)
+static int test_sha512(struct sha384_test const *test)
 {
-	struct sha256_context ctx;
-	uint8_t digest[SHA256_DIGEST_SIZE];
-	char digest_s[SHA256_DIGEST_SIZE * 2 + 1];
+	struct sha512_context ctx;
+	uint8_t digest[SHA512_DIGEST_SIZE];
+	char digest_s[SHA512_DIGEST_SIZE * 2 + 1];
 
-	sha256_init(&ctx);
+	sha512_init(&ctx);
 
-	sha256_update(&ctx, test->input, strlen(test->input));
-	sha256_digest(&ctx, digest);
+	sha512_update(&ctx, test->input, strlen(test->input));
+	sha512_digest(&ctx, digest);
 
-	for (int i = 0; i < SHA256_DIGEST_SIZE; i += 1) {
+	for (int i = 0; i < SHA512_DIGEST_SIZE; i += 1) {
 		sprintf(&digest_s[i * 2], "%02x", digest[i]);
 	}
 
@@ -104,7 +104,7 @@ int main(void)
 	int ko = 0;
 
 	for (size_t i = 0; i < sizeof_array(TESTS); i += 1) {
-		int result = test_sha256(&TESTS[i]);
+		int result = test_sha512(&TESTS[i]);
 
 		if (result != EXIT_SUCCESS) {
 			ko += 1;

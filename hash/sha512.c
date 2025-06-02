@@ -6,11 +6,11 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 11:47:38 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/30 19:34:49 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:40:33 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sha2.h"
+#include "hash/sha2.h"
 
 struct hash_algorithm const ALGORITHM_SHA384 = {
 	.name_pretty = "SHA384",
