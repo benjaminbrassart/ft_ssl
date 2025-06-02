@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 12:46:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 17:26:12 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 18:43:09 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ static int decode_full_block(char const in[4], uint8_t out[3])
 }
 
 void base64_enc_init(struct base64_encoder *enc, void *ctx,
-		     base64_encode_yield *yield_block)
+		     base64_encode_yield *yield)
 {
 	enc->ctx = ctx;
-	enc->yield_block = yield_block;
+	enc->yield = yield;
 	enc->length = 0;
 }
 
@@ -93,7 +93,7 @@ int base64_enc_update(struct base64_encoder *enc, void const *data, size_t len)
 			encode_full_block(enc->buffer, out);
 			enc->length = 0;
 
-			int res = enc->yield_block(enc->ctx, out);
+			int res = enc->yield(enc->ctx, out);
 
 			if (res != EXIT_SUCCESS) {
 				return res;
@@ -107,7 +107,7 @@ int base64_enc_update(struct base64_encoder *enc, void const *data, size_t len)
 int base64_enc_finalize(struct base64_encoder *enc, unsigned pad)
 {
 	if (enc->length == 0) {
-		return enc->yield_block(enc->ctx, "\0\0\0\0");
+		return enc->yield(enc->ctx, "\0\0\0\0");
 	}
 
 	char pad_char = pad ? '=' : '\0';
@@ -134,5 +134,5 @@ int base64_enc_finalize(struct base64_encoder *enc, unsigned pad)
 		out[i] = BASE64[index[i]];
 	}
 
-	return enc->yield_block(enc->ctx, out);
+	return enc->yield(enc->ctx, out);
 }
