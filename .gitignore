@@ -3,4 +3,6 @@
 *.exe
 *.so
 *.a
+/.cache/
 /ft_ssl
+/compile_commands.json
