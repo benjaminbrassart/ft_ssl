@@ -1,19 +1,19 @@
 {
-   editline_readline
+   readline
    Memcheck:Leak
    ...
    fun:readline
 }
 
 {
-   editline_rl_initialize
+   rl_initialize
    Memcheck:Leak
    ...
    fun:rl_initialize
 }
 
 {
-   editline_add_history
+   add_history
    Memcheck:Leak
    ...
    fun:add_history

@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 12:28:05 by bbrassar          #+#    #+#              #
-#    Updated: 2025/05/31 18:09:51 by bbrassar         ###   ########.fr        #
+#    Updated: 2025/06/02 12:23:05 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ override TEST_BIN := $(TEST_OBJ:.c.o=)
 
 override CFLAGS += -Wall -Wextra -c
 override CPPFLAGS += -MMD -MP
-override LDLIBS += -ledit
+override LDLIBS += -lreadline
 override LDFLAGS ?=
 
 $(NAME): $(OBJ)

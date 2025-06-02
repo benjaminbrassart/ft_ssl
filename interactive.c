@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 16:43:41 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/05/31 20:18:20 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:24:26 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <unistd.h>
 
-#include <editline/readline.h>
+#include <readline/history.h>
+#include <readline/readline.h>
 
 struct interactive {
 	unsigned running : 1;
