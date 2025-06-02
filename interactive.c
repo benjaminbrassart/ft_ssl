@@ -6,14 +6,15 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 16:43:41 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 12:24:26 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 12:29:10 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "interactive.h"
 #include "args.h"
-
 #include "command.h"
+#include "verbose.h"
+
 #include "libft/ft.h"
 
 #include <stddef.h>
@@ -158,7 +159,7 @@ static char const **split_line(char const line[])
 	size_t ptrs_size = (words + 1) * sizeof(char *);
 	size_t alloc_size = ptrs_size + total_length;
 
-	char const **ptrs = malloc(alloc_size);
+	char const **ptrs = verbose_malloc(alloc_size);
 	char *next_string = (char *)(((uint8_t *)ptrs) + ptrs_size);
 
 	if (ptrs == NULL) {
