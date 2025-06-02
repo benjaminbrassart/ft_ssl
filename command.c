@@ -6,11 +6,12 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 18:03:51 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 12:39:16 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 18:07:42 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "command.h"
+#include "cipher/cipher.h"
 #include "hash/hash.h"
 
 #include "libft/ft.h"
@@ -27,12 +28,22 @@ static struct command const HASH_COMMANDS[] = {
 	{ "sha512", command_sha512 },
 };
 
+static struct command const CIPHER_COMMANDS[] = {
+	{ "base64", command_base64 },
+};
+
 static struct command_group const COMMAND_GROUPS[] = {
 	{
 		.name = "Message Digest",
 		.flags = "-p -q -r -s",
 		.commands = HASH_COMMANDS,
 		.command_count = sizeof_array(HASH_COMMANDS),
+	},
+	{
+		.name = "Cipher",
+		.flags = NULL,
+		.commands = CIPHER_COMMANDS,
+		.command_count = sizeof_array(CIPHER_COMMANDS),
 	},
 };
 
@@ -67,10 +78,15 @@ void print_available_commands(void)
 			write(STDOUT_FILENO, "  ", 2);
 			write(STDOUT_FILENO, command->name,
 			      ft_strlen(command->name));
+			write(STDOUT_FILENO, "\n", 2);
 		}
 
-		write(STDOUT_FILENO, "\n  Flags: ", 10);
-		write(STDOUT_FILENO, group->flags, ft_strlen(group->flags));
+		if (group->flags != NULL) {
+			write(STDOUT_FILENO, "\n  Flags: ", 10);
+			write(STDOUT_FILENO, group->flags,
+			      ft_strlen(group->flags));
+			write(STDOUT_FILENO, "\n", 1);
+		}
 		write(STDOUT_FILENO, "\n", 1);
 	}
 }

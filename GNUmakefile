@@ -6,7 +6,7 @@
 #    By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 12:28:05 by bbrassar          #+#    #+#              #
-#    Updated: 2025/06/02 13:17:26 by bbrassar         ###   ########.fr        #
+#    Updated: 2025/06/02 18:23:32 by bbrassar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,8 @@ NAME := ft_ssl
 
 override SRC := main.c interactive.c args.c command.c verbose.c \
 	hash/hash.c hash/md5.c hash/sha256.c hash/sha512.c \
-	cipher/base64.c \
-	libft/ft_strcmp.c libft/ft_strlen.c libft/ft_memmove.c
+	cipher/cipher.c cipher/base64.c \
+	libft/ft_strcmp.c libft/ft_strlen.c libft/ft_strnlen.c libft/ft_memmove.c
 override OBJ := $(SRC:%.c=%.c.o)
 override DEP := $(OBJ:.c.o=.c.d)
 
