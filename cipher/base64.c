@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 12:46:54 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 18:43:09 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 19:31:11 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,80 @@ int base64_enc_finalize(struct base64_encoder *enc, unsigned pad)
 	}
 
 	return enc->yield(enc->ctx, out);
+}
+
+void base64_dec_init(struct base64_decoder *dec, void *ctx,
+		     base64_decode_yield *yield)
+{
+	dec->ctx = ctx;
+	dec->yield = yield;
+	dec->length = 0;
+}
+
+int base64_dec_update(struct base64_decoder *dec, char const data[], size_t len)
+{
+	for (size_t i = 0; i < len; i += 1) {
+		if (data[i] == '\n') {
+			continue;
+		}
+
+		dec->buffer[dec->length] = data[i];
+		dec->length += 1;
+		if (dec->length % 4 == 0) {
+			uint8_t out[3];
+
+			int result = decode_full_block(dec->buffer, out);
+
+			dec->length = 0;
+			if (result != EXIT_SUCCESS) {
+				return result;
+			}
+
+			int res = dec->yield(dec->ctx, out, 3);
+
+			if (res != EXIT_SUCCESS) {
+				return res;
+			}
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int base64_dec_finalize(struct base64_decoder *dec)
+{
+	if (dec->length == 0) {
+		return EXIT_SUCCESS;
+	}
+
+	// TODO handle padding
+
+	uint8_t out[3];
+	uint8_t sextets[4] = { 0x00, 0x00, 0x00, 0x00 };
+
+	for (size_t i = 0; i < dec->length; i += 1) {
+		int res = char_to_sextet(dec->buffer[i], &sextets[i]);
+
+		if (res != EXIT_SUCCESS) {
+			return res;
+		}
+	}
+
+	size_t len = 1;
+
+	out[0] = (sextets[0] << 2);
+
+	if (dec->length > 1) {
+		out[0] |= (sextets[1] >> 4);
+		out[1] = (sextets[1] << 4);
+		len += 1;
+	}
+
+	if (dec->length > 2) {
+		out[1] |= (sextets[2] >> 2);
+		out[2] = (sextets[2] << 6);
+		len += 1;
+	}
+
+	return dec->yield(dec->ctx, out, len);
 }

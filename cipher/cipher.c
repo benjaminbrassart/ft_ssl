@@ -6,7 +6,7 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 18:03:53 by bbrassar          #+#    #+#             */
-/*   Updated: 2025/06/02 18:40:54 by bbrassar         ###   ########.fr       */
+/*   Updated: 2025/06/02 19:08:20 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,18 @@ int encode_callback(void *ctx, char const data[4])
 {
 	struct file const *file = ctx;
 	size_t len = ft_strnlen(data, 4);
+
+	// TODO add some buffering: this is at best suboptimal
+	if (write(file->fd, data, len) < 0) {
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int decode_callback(void *ctx, uint8_t const data[3], size_t len)
+{
+	struct file const *file = ctx;
 
 	// TODO add some buffering: this is at best suboptimal
 	if (write(file->fd, data, len) < 0) {
@@ -77,8 +89,35 @@ static int command_base64_encode(struct file const *in, struct file const *out)
 
 static int command_base64_decode(struct file const *in, struct file *out)
 {
-	// TODO implement me
-	return EXIT_FAILURE;
+	struct base64_decoder dec;
+	char buffer[42];
+
+	base64_dec_init(&dec, (void *)out, decode_callback);
+	for (;;) {
+		ssize_t rc = read(in->fd, buffer, sizeof(buffer));
+
+		if (rc < 0) {
+			return EXIT_FAILURE;
+		}
+
+		if (rc == 0) {
+			break;
+		}
+
+		int res = base64_dec_update(&dec, buffer, (size_t)rc);
+
+		if (res != EXIT_SUCCESS) {
+			return res;
+		}
+	}
+
+	int res = base64_dec_finalize(&dec);
+
+	if (res != EXIT_SUCCESS) {
+		return res;
+	}
+
+	return EXIT_SUCCESS;
 }
 
 int command_base64(struct arg_iterator *it)
