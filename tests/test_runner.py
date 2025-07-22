@@ -1,7 +1,6 @@
 import difflib
 import functools
 import pathlib
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -136,9 +135,9 @@ if __name__ == "__main__":
                 assert type(data) is list, f"expected list, got {type(data)}"
 
                 for test_dict in data:
-                    assert (
-                        type(test_dict) is dict
-                    ), f"expected dict, got {type(test_dict)}"
+                    assert type(test_dict) is dict, (
+                        f"expected dict, got {type(test_dict)}",
+                    )
 
                     id = len(tests)
                     tests.append(
