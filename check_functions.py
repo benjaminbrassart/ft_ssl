@@ -3,7 +3,6 @@
 allowed_functions = {"open", "close", "read", "write", "malloc", "free"}
 
 if __name__ == "__main__":
-    import re
     import subprocess
     import sys
 
@@ -19,8 +18,14 @@ if __name__ == "__main__":
     )
     p.check_returncode()
 
-    symbols = [symbol.partition("@")[0] for symbol in p.stdout.splitlines() if not symbol.startswith("_")]
-    forbidden_symbols = [symbol for symbol in symbols if symbol not in allowed_functions]
+    symbols = [
+        symbol.partition("@")[0]
+        for symbol in p.stdout.splitlines()
+        if not symbol.startswith("_")
+    ]
+    forbidden_symbols = [
+        symbol for symbol in symbols if symbol not in allowed_functions
+    ]
 
     if len(forbidden_symbols) != 0:
         print("\n".join(forbidden_symbols))
